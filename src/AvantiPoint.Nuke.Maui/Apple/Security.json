@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nuke-build/nuke/master/source/Nuke.CodeGeneration/schema.json",
+  "name": "Security",
+  "officialUrl": "https://developer.apple.com",
+  "pathExecutable": "security",
+  "tasks": [
+    {
+      "help": "Uses the <c>security</c> tool to create a new keychain.",
+      "postfix": "CreateKeychain",
+      "definiteArgument": "create-keychain",
+      "settingsClass": {}
+    },
+    {
+      "help": "Uses the <c>security</c> tool to unlock the keychain",
+      "postfix": "UnlockKeychain",
+      "definiteArgument": "unlock-keychain",
+      "settingsClass": {}
+    },
+    {
+      "help": "Uses the <c>security</c> tool to import a p12 certificate",
+      "postfix": "Import",
+      "omitCommonProperties": true,
+      "definiteArgument": "import",
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "CertificatePath",
+            "type": "string",
+            "format": "{value}",
+            "help": "The path to the certificate to import"
+          },
+          {
+            "name": "KeychainPath",
+            "type": "string",
+            "format": "-k {value}",
+            "help": "The path to the keychain to import the certificate into"
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "format": "-P {value}",
+            "secret": true,
+            "help": "The p12 certificate password"
+          }
+        ]
+      }
+    }
+  ],
+  "commonTaskProperties": [
+    {
+      "name": "Password",
+      "type": "string",
+      "format": "-p {value}",
+      "secret": true,
+      "help": "Sets the Password for the Keychain"
+    },
+    {
+      "name": "Keychain",
+      "type": "string",
+      "format": "{value}",
+      "help": "Keychain Path"
+    }
+  ]
+}

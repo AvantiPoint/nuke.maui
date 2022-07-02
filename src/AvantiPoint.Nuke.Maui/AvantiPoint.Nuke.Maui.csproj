@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nuke.CodeGeneration" Version="6.1.1" />
+    <PackageReference Include="Nuke.Common" Version="6.1.1" />
+    <PackageReference Include="Nuke.Components" Version="6.1.1" />
+    <PackageReference Include="Refit" Version="6.3.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--<NukeSpecificationFiles Include="**\Security.json" />-->
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 # Nuke MAUI
 
-The AvantiPoint Nuke Maui library is an extension library for [Nuke Build](https://www.nuke.build/) for developers writing DotNet Maui applications. Out of the box it's meant to simplify the process of generating a fully functional CI build for your target platforms. 
+The AvantiPoint Nuke Maui library is an extension library for [Nuke Build](https://www.nuke.build/) for developers writing DotNet Maui applications. Out of the box it's meant to simplify the process of generating a fully functional CI build for your target platforms.
 
 | Platform | Status |
 | -------- | ------ |
@@ -20,9 +20,14 @@ To get started you will need to setup the Nuke Build CLI tool on your system and
 
 By default if these properties are null or empty we will not specify them as command line arguments and it will be assumed that you are managing these values outside of the Nuke Build.
 
+```bash
+nuke :setup
+```
+
 ```cs
 public class Build : MauiBuild
 {
+    // This has no default targets and will display available targets when you run `nuke`
     public static int Main () => Execute<Build>();
 
     public GitHubActions GitHubActions => GitHubActions.Instance;
@@ -42,3 +47,60 @@ The Build can easily be run by running the `nuke` command along with the desired
 ```bash
 nuke CompileAndroid
 ```
+
+## Additional Considerations
+
+Currently the MAUI templates do not include any additional parameters which are typically required for building, particularly on iOS. Be sure that the RuntimeIdentifier property is set to `ios-arm64` when building otherwise the build will fail.
+
+The P12 Certificate used to sign iOS and macCatalyst apps along with the P8 Auth Key for connecting to AppStoreConnect, as well as the Android Keystore must be provided as Base64 encoded strings. The P12 & Android Keystore files will be decoded restored on the local filesystem in the Nuke temp directory. The P12 for iOS & macCatalyst will be added to a temporary Key Chain for use during the build.
+
+As installing workloads requires sudo access which can be a bit of a pain when running this locally, the Install Maui Workload target will first determine if the MAUI workload is installed. If it is already installed it will return eliminating any issues with requiring sudo access. This shouldn't affect your CI builds as you will already have the necessary permissions.
+
+### Apple Provisioning Profiles
+
+The Nuke Targets include a target that will reach out to the Apple AppStore Connect API to retrieve a specified Provisioning Profile. This is particularly useful for CI Builds as it ensures that as long as your provisioning profile is active you will always have the latest valid profile. This can really save time when you need to regenerate the provisioning profile for new team members, add new devices, or renew expiring profiles.
+
+## Secrets
+
+As you will have various secrets required for iOS & Android you will need to be sure to mark them as required in your build definitions
+
+```cs
+[GitHubActions("android-build",
+    GitHubActionsImage.WindowsLatest,
+    FetchDepth = 0,
+    AutoGenerate = true,
+    OnPushBranches = new[] { MasterBranch },
+    InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
+    ImportSecrets = new[] { nameof(IHazAndroidKeystore.AndroidKeystoreName), nameof(IHazAndroidKeystore.AndroidKeystoreB64), nameof(IHazAndroidKeystore.AndroidKeystorePassword) }
+    )]
+[GitHubActions("ios-build",
+    // this needs to manually be updated 'macos-12`
+    GitHubActionsImage.MacOsLatest,
+    FetchDepth = 0,
+    AutoGenerate = true,
+    OnPushBranches = new[] { MasterBranch },
+    InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
+    ImportSecrets = new[]
+    {
+         nameof(IHazAppleCertificate.P12B64),
+         nameof(IHazAppleCertificate.P12Password),
+         nameof(IRestoreAppleProvisioningProfile.AppleIssuerId),
+         nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
+         nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
+         nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
+    }
+)]
+public class Build : MauiBuild
+{
+    public static int Main () => Execute<Build>();
+
+    const string MasterBranch = "master";
+
+    public GitHubActions GitHubActions => GitHubActions.Instance;
+
+    [NerdbankGitVersioning]
+    readonly NerdbankGitVersioning NerdbankVersioning;
+
+    public override string ApplicationDisplayVersion => NerdbankVersioning.NuGetPackageVersion;
+    public override long ApplicationVersion => GitHubActions.RunId;
+}
