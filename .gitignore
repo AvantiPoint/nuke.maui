@@ -12,3 +12,5 @@
 .vs/
 
 *.csproj.user
+
+Artifacts/
