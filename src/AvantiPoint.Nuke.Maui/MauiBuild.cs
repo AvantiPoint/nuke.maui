@@ -3,7 +3,6 @@ using AvantiPoint.Nuke.Maui.Android;
 using AvantiPoint.Nuke.Maui.Apple;
 using Nuke.Common;
 using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.Tooling.Enumeration;
 
 namespace AvantiPoint.Nuke.Maui;
 

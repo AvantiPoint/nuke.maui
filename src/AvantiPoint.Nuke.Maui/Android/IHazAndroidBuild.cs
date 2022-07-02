@@ -31,8 +31,11 @@ public interface IHazAndroidBuild :
             var targetFramework = Solution.GetTargetFramework("android");
             targetFramework.NotNullOrEmpty("Could not locate a valid Android Target Framework");
 
-            Log.Information($"Display Version: {ApplicationDisplayVersion}");
-            Log.Information($"Build Version: {ApplicationVersion}");
+            if (!string.IsNullOrEmpty(ApplicationDisplayVersion))
+                Log.Information($"Display Version: {ApplicationDisplayVersion}");
+
+            if (ApplicationVersion > 0)
+                Log.Information($"Build Version: {ApplicationVersion}");
 
             DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
@@ -41,8 +44,10 @@ public interface IHazAndroidBuild :
                     .AddProperty(BuildProps.Android.AndroidSigningStorePass, AndroidKeystorePassword)
                     .AddProperty(BuildProps.Android.AndroidSigningKeyAlias, AndroidKeystoreName)
                     .AddProperty(BuildProps.Android.AndroidSigningKeyStore, KeystorePath)
-                    .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion)
-                    .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion)
+                    .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
+                        .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
+                    .When(ApplicationVersion > 0, _ => _
+                        .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .SetProcessExecutionTimeout(CompileTimeout.Milliseconds)
                     .SetOutput(ArtifactsDirectory));
 

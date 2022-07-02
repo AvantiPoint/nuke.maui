@@ -32,16 +32,21 @@ public interface IHazIOSBuild :
             var targetFramework = Solution.GetTargetFramework("ios");
             targetFramework.NotNullOrEmpty("Could not locate a valid iOS Target Framework");
 
-            Log.Information($"Display Version: {ApplicationDisplayVersion}");
-            Log.Information($"Build Version: {ApplicationVersion}");
+            if(!string.IsNullOrEmpty(ApplicationDisplayVersion))
+                Log.Information($"Display Version: {ApplicationDisplayVersion}");
+
+            if(ApplicationVersion > 0)
+                Log.Information($"Build Version: {ApplicationVersion}");
 
             DotNetTasks.DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
                     .SetProject(Solution)
                     .SetFramework(targetFramework)
                     .AddProperty(BuildProps.iOS.ArchiveOnBuild, true)
-                    .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion)
-                    .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion)
+                    .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
+                        .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
+                    .When(ApplicationVersion > 0, _ => _
+                        .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .AddProperty(BuildProps.iOS.MtouchLink, Linker)
                     .SetProcessExecutionTimeout(CompileTimeout.Milliseconds)
                     .SetOutput(ArtifactsDirectory));
