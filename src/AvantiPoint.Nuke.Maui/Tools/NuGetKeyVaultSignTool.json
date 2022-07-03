@@ -1,0 +1,75 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nuke-build/nuke/master/source/Nuke.CodeGeneration/schema.json",
+  "references": [
+    "https://github.com/novotnyllc/NuGetKeyVaultSignTool#getting-started"
+  ],
+  "name": "NuGetKeyVaultSignTool",
+  "officialUrl": "https://github.com/novotnyllc/NuGetKeyVaultSignTool",
+  "help": "NuGetKeyVaultSignTool is a DotNet CLI Tool to help you easily sign NuGet packages",
+  "packageId": "NuGetKeyVaultSignTool",
+  "packageExecutable": "NuGetKeyVaultSignTool.exe",
+  "tasks": [
+    {
+      "definiteArgument": "sign",
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "PackageFilter",
+            "type": "string",
+            "format": "{value}",
+            "help": "A filter like '**/*.nupkg' or '**/*.snupkg'"
+          },
+          {
+            "name": "FileDigest",
+            "type": "string",
+            "format": "--file-digest {value}",
+            "default": "\"sha256\""
+          },
+          {
+            "name": "TimestampUrl",
+            "type": "Uri",
+            "format": "--timestamp-rfc3161 {value}",
+            "default": "new Uri(\"http://timestamp.digicert.com\")",
+            "help": "The URL for the Timestamp server"
+          },
+          {
+            "name": "TimestampDigest",
+            "type": "string",
+            "format": "--timestamp-digest {value}",
+            "default": "\"sha256\""
+          },
+          {
+            "name": "AzureKeyVaultUrl",
+            "type": "Uri",
+            "format": "--azure-key-vault-url {value}",
+            "secret": true
+          },
+          {
+            "name": "ClientId",
+            "type": "string",
+            "format": "--azure-key-vault-client-id {value}",
+            "secret": true
+          },
+          {
+            "name": "TenantId",
+            "type": "string",
+            "format": "--azure-key-vault-tenant-id {value}",
+            "secret": true
+          },
+          {
+            "name": "ClientSecret",
+            "type": "string",
+            "format": "--azure-key-vault-client-secret {value}",
+            "secret": true
+          },
+          {
+            "name": "CertificateName",
+            "type": "string",
+            "format": "--azure-key-vault-certificate {value}",
+            "secret": true
+          }
+        ]
+      }
+    }
+  ]
+}

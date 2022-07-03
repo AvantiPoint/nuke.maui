@@ -1,8 +1,8 @@
 ﻿using AvantiPoint.Nuke.Maui.Apple;
 using Nuke.Common;
 using Nuke.Common.Tools.DotNet;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using Nuke.Components;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 public interface IPublishInternal : IHazArtifacts
 {

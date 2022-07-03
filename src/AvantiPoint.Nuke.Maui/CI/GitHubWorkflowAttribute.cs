@@ -198,11 +198,10 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
         foreach (var input in OnWorkflowDispatchOptionalInputs.Concat(OnWorkflowDispatchRequiredInputs))
             yield return (input, $"${{{{ github.event.inputs.{input} }}}}");
 
-        static string GetSecretValue(string secret)
-            => $"${{{{ secrets.{secret.SplitCamelHumpsWithKnownWords().JoinUnderscore().ToUpperInvariant()} }}}}";
+        static string GetSecretValue(string value) => $"${{{{ secrets.{value} }}}}";
 
-        foreach (var secret in job.ImportSecrets)
-            yield return (secret, GetSecretValue(secret));
+        foreach (WorkflowSecret secret in job.ImportSecrets)
+            yield return (secret.Name, GetSecretValue(secret.Secret));
 
         if (EnableGitHubToken)
             yield return ("GITHUB_TOKEN", GetSecretValue("GITHUB_TOKEN"));

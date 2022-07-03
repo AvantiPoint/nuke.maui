@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageDownload Include="nbgv" Version="[3.5.107]" />
     <PackageDownload Include="Nerdbank.GitVersioning" Version="[3.5.107]" />
+    <PackageDownload Include="NuGetKeyVaultSignTool" Version="[3.2.2]" />
   </ItemGroup>
 
   <ItemGroup>

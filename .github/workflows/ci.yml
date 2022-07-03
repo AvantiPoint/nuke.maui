@@ -115,3 +115,8 @@ jobs:
         env:
           InHouseNugetFeed: ${{ secrets.IN_HOUSE_NUGET_FEED }}
           InHouseApiKey: ${{ secrets.IN_HOUSE_API_KEY }}
+          CodeSignCertificate: ${{ secrets.CODESIGNCERTIFICATE }}
+          CodeSignClientId: ${{ secrets.CODESIGNCLIENTID }}
+          CodeSignClientSecret: ${{ secrets.CODESIGNCLIENTSECRET }}
+          CodeSignKeyVault: ${{ secrets.CODESIGNKEYVAULT }}
+          CodeSignTenantId: ${{ secrets.CODESIGNTENANTID }}

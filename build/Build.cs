@@ -51,9 +51,18 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     Needs = new[] { "compile-lib", "android-build", "ios-build" },
     DownloadArtifacts = new[] { "nuget" },
     CheckoutRepository = false,
-    ImportSecrets = new[] { nameof(IPublishInternal.InHouseNugetFeed), nameof(IPublishInternal.InHouseApiKey) },
+    ImportSecrets = new[]
+    {
+        nameof(IPublishInternal.InHouseNugetFeed),
+        nameof(IPublishInternal.InHouseApiKey),
+        $"{nameof(ICodeSignNuget.CodeSignCertificate)}=CODESIGNCERTIFICATE",
+        $"{nameof(ICodeSignNuget.CodeSignClientId)}=CODESIGNCLIENTID",
+        $"{nameof(ICodeSignNuget.CodeSignClientSecret)}=CODESIGNCLIENTSECRET",
+        $"{nameof(ICodeSignNuget.CodeSignKeyVault)}=CODESIGNKEYVAULT",
+        $"{nameof(ICodeSignNuget.CodeSignTenantId)}=CODESIGNTENANTID"
+    },
     InvokedTargets = new[] { nameof(IPublishInternal.PublishNuGet) })]
-class Build : MauiBuild, ICompileLibrary, IPublishInternal
+class Build : MauiBuild, ICompileLibrary, IPublishInternal, ICodeSignNuget
 {
     public static int Main () => Execute<Build>();
 
