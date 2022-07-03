@@ -60,8 +60,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './build.cmd CompileIos'
-        run: ./build.cmd CompileIos
+      - name: Run './build.sh CompileIos'
+        run: ./build.sh CompileIos
         env:
           P12B64: ${{ secrets.P12B64 }}
           P12Password: ${{ secrets.P12PASSWORD }}

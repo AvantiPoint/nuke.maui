@@ -147,9 +147,13 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
             };
         }
 
+        var cmdPath = BuildCmdPath;
+        if (!job.Image.ToString().StartsWith("Windows"))
+            cmdPath = cmdPath.Replace(".cmd", ".sh");
+
         yield return new GitHubActionsRunStep
         {
-            Command = $"./{BuildCmdPath} {job.InvokedTargets.JoinSpace()}",
+            Command = $"./{cmdPath} {job.InvokedTargets.JoinSpace()}",
             Imports = GetImports(job).ToDictionary(x => x.Key, x => x.Value)
         };
 
