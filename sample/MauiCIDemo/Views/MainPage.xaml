@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MauiCIDemo.ViewModels"
+             x:DataType="vm:MainPageViewModel"
              Title="{Binding Title}"
              x:Class="MauiCIDemo.Views.MainPage">
 
@@ -30,6 +32,12 @@
               SemanticProperties.Hint="Counts the number of times you click"
               Command="{Binding CountCommand}"
               HorizontalOptions="Center" />
+
+      <Label Text="{Binding DisplayVersion,StringFormat='Display Version: {0}'}"
+             Margin="0,10,0,0"
+             HorizontalTextAlignment="Center" />
+      <Label Text="{Binding AppVersion,StringFormat='Build Version: {0}'}"
+             HorizontalTextAlignment="Center" />
 
     </VerticalStackLayout>
   </ScrollView>

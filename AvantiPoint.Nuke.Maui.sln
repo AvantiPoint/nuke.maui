@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{9E70CBBC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{5E423304-1493-4EEC-BE27-198125187F3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiCIDemo", "sample\MauiCIDemo\MauiCIDemo.csproj", "{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiCIDemo", "sample\MauiCIDemo\MauiCIDemo.csproj", "{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,11 +26,10 @@ Global
 		{6839AE0E-EAB7-498A-84F6-6B4F93D2C669}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6839AE0E-EAB7-498A-84F6-6B4F93D2C669}.Release|Any CPU.Build.0 = Release|Any CPU
 		{696CF4BD-53AE-485E-96F4-16E027F276F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{696CF4BD-53AE-485E-96F4-16E027F276F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{696CF4BD-53AE-485E-96F4-16E027F276F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{696CF4BD-53AE-485E-96F4-16E027F276F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B09762A0-CB4B-4B5E-A7E3-6E48AB3D8AB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

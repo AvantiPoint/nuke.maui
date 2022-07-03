@@ -5,10 +5,13 @@ public class MainPageViewModel : BindableBase
     private ISemanticScreenReader _screenReader { get; }
     private int _count;
 
-    public MainPageViewModel(ISemanticScreenReader screenReader)
+    public MainPageViewModel(ISemanticScreenReader screenReader, IAppInfo appInfo)
     {
         _screenReader = screenReader;
         CountCommand = new DelegateCommand(OnCountCommandExecuted);
+
+        DisplayVersion = appInfo.VersionString;
+        AppVersion = appInfo.BuildString;
     }
 
     public string Title => "Main Page";
@@ -19,6 +22,10 @@ public class MainPageViewModel : BindableBase
         get => _text;
         set => SetProperty(ref _text, value);
     }
+
+    public string DisplayVersion { get; }
+
+    public string AppVersion { get; }
 
     public DelegateCommand CountCommand { get; }
 

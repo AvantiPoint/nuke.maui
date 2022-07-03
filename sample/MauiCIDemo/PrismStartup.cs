@@ -19,6 +19,8 @@ internal static class PrismStartup
     private static void RegisterTypes(IContainerRegistry containerRegistry)
     {
         containerRegistry.RegisterForNavigation<MainPage>()
-                     .RegisterInstance(SemanticScreenReader.Default);
+                     .RegisterGlobalNavigationObserver()
+                     .RegisterInstance(SemanticScreenReader.Default)
+                     .RegisterInstance(AppInfo.Current);
     }
 }
