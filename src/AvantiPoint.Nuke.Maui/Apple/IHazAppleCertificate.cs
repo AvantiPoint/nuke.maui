@@ -21,7 +21,7 @@ public interface IHazAppleCertificate : INukeBuild
 
     Target RestoreIOSCertificate => _ => _
         .OnlyOnMacHost()
-        .TryBefore<IRestore>()
+        .TryBefore<IDotNetRestore>()
         .BeforeMauiWorkload()
         .Unlisted()
         .Requires(() => P12B64)

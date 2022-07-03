@@ -10,7 +10,7 @@ namespace AvantiPoint.Nuke.Maui;
 public interface IHazMauiWorkload : INukeBuild
 {
     Target InstallWorkload => _ => _
-        .TryBefore<IRestore>()
+        .TryBefore<IDotNetRestore>()
         .Executes(() =>
         {
             var output = DotNet("workload list");

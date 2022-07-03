@@ -22,7 +22,7 @@ public interface IHazAndroidKeystore : INukeBuild
     AbsolutePath KeystorePath => (AbsolutePath)Path.Combine(TemporaryDirectory, $"{AndroidKeystoreName}.keystore");
 
     Target RestoreKeystore => _ => _
-        .TryBefore<IRestore>()
+        .TryBefore<IDotNetRestore>()
         .TryBefore<IHazMauiWorkload>()
         .Unlisted()
         .Requires(() => AndroidKeystoreB64)

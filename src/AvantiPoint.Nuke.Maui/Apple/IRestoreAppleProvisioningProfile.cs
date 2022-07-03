@@ -18,7 +18,7 @@ public interface IRestoreAppleProvisioningProfile : IUsesAppStoreConnect
 
     Target DownloadProvisioningProfile => _ => _
         .OnlyOnMacHost()
-        .TryBefore<IRestore>()
+        .TryBefore<IDotNetRestore>()
         .BeforeMauiWorkload()
         .Unlisted()
         .Requires(() => AppleIssuerId)
