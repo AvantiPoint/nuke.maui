@@ -48,7 +48,7 @@ jobs:
           path: artifacts/android-build
   ios-build:
     name: ios-build
-    runs-on: macOS-latest
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:

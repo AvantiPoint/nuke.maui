@@ -7,6 +7,7 @@ namespace AvantiPoint.Nuke.Maui.CI.Configuration;
 
 internal class GitHubWorkflowJob : GitHubActionsJob
 {
+    public HostedAgent Agent { get; set; }
     public string[] Needs { get; set; } = Array.Empty<string>();
 
     public override void Write(CustomFileWriter writer)
@@ -23,7 +24,7 @@ internal class GitHubWorkflowJob : GitHubActionsJob
                 else
                     writer.WriteLine($"needs: [{string.Join(',', Needs)}]");
             }
-            writer.WriteLine($"runs-on: {Image.GetValue()}");
+            writer.WriteLine($"runs-on: {Agent.GetValue()}");
             writer.WriteLine("steps:");
             using (writer.Indent())
             {

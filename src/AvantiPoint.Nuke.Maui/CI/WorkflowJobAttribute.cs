@@ -9,7 +9,7 @@ public class WorkflowJobAttribute : Attribute
 {
     public string Name { get; set; } = "";
 
-    public GitHubActionsImage Image { get; set; } = GitHubActionsImage.WindowsLatest;
+    public HostedAgent Image { get; set; } = HostedAgent.Windows;
 
     public string[] Needs { get; set; } = Array.Empty<string>();
 

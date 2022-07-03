@@ -105,7 +105,7 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
 
             yield return new GitHubWorkflowJob
             {
-                Image = jobDef.Image,
+                Agent = jobDef.Image,
                 Name = jobDef.Name,
                 Needs = jobDef.Needs,
                 Steps = GetSteps(jobDef, build.ExecutableTargets()).ToArray()

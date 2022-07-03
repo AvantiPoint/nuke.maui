@@ -19,7 +19,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
 [WorkflowJob(
     Name = "android-build",
     //ArtifactName = "android",
-    Image = GitHubActionsImage.WindowsLatest,
+    Image = HostedAgent.Windows,
     InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
     ImportSecrets = new[]
     {
@@ -31,7 +31,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
 [WorkflowJob(
     Name = "ios-build",
     //ArtifactName = "ios",
-    Image = GitHubActionsImage.MacOsLatest,
+    Image = HostedAgent.Mac,
     InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
     ImportSecrets = new[]
     {
