@@ -9,6 +9,7 @@ public interface ICompileLibrary : IHazConfiguration, IHazSolution
 {
     Target CompileLib => _ => _
         .DependsOn<IDotNetRestore>()
+        .DependsOn<IHazMauiWorkload>()
         .Produces(EnvironmentInfo.WorkingDirectory / "Artifacts")
         .Executes(() =>
         {
