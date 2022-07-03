@@ -48,7 +48,7 @@ public interface IHazIOSBuild :
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .AddProperty(BuildProps.iOS.MtouchLink, Linker)
-                    //.SetProcessExecutionTimeout(CompileTimeout.Milliseconds)
+                    .SetProcessExecutionTimeout(CompileTimeout)
                     .SetOutput(ArtifactsDirectory / "ios-build"));
         });
 }

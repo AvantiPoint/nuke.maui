@@ -1,9 +1,11 @@
 ﻿using AvantiPoint.Nuke.Maui.Extensions;
 using JetBrains.Annotations;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Utilities.Collections;
 using Nuke.Components;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -37,6 +39,8 @@ public interface IHazAndroidBuild :
             if (ApplicationVersion > 0)
                 Log.Information($"Build Version: {ApplicationVersion}");
 
+            var outputDirectory = ArtifactsDirectory / "android-build";
+
             DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
                     .SetProject(Project)
@@ -49,10 +53,18 @@ public interface IHazAndroidBuild :
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
-                    //.SetProcessExecutionTimeout(CompileTimeout.Minutes)
-                    .SetOutput(ArtifactsDirectory / "android-build"));
+                    .SetProcessExecutionTimeout(CompileTimeout)
+                    .SetOutput(outputDirectory));
 
-            Assert.True(Directory.EnumerateFiles(ArtifactsDirectory, "*-Signed.apk").Any(), "No Signed APK was found in the output directory");
-            Assert.True(Directory.EnumerateFiles(ArtifactsDirectory, "*-Signed.aab").Any(), "No Signed AAB was found in the output directory");
+            Assert.NotEmpty(outputDirectory.GlobFiles("*-Signed.apk", "*-Signed.aab"), "No Signed APK or AAB files could be found");
+            outputDirectory.GlobFiles("*")
+                .Where(x => !x.Name.Contains("-Signed"))
+                .ForEach(x =>
+                {
+                    if (!x.NameWithoutExtension.EndsWith("-Signed"))
+                        File.Delete(x);
+                    else
+                        Log.Information("Android Artifact: {Name}", x.Name);
+                });
         });
 }
