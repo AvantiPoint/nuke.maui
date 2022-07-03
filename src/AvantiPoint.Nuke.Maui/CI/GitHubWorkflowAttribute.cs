@@ -100,6 +100,9 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
 
         foreach (var jobDef in jobs)
         {
+            if (!JobNames.Contains(jobDef.Name))
+                continue;
+
             yield return new GitHubWorkflowJob
             {
                 Image = jobDef.Image,

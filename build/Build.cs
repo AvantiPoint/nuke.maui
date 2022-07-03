@@ -10,7 +10,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
-    JobNames = new[] { "android-build", "ios-build" } )]
+    JobNames = new[] { "android-build", "ios-build", "compile-lib", "publish-internal" } )]
 [WorkflowJob(
     Name = "android-build",
     //ArtifactName = "android",
@@ -37,7 +37,18 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
          nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
          nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
     })]
-class Build : MauiBuild
+[WorkflowJob(
+    Name = "compile-lib",
+    ArtifactName = "nuget",
+    InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib) } )]
+[WorkflowJob(
+    Name = "publish-internal",
+    Needs = new[] { "compile-lib", "android-build", "ios-build" },
+    DownloadArtifacts = new[] { "nuget" },
+    CheckoutRepository = false,
+    ImportSecrets = new[] { nameof(IPublishInternal.InHouseNugetFeed), nameof(IPublishInternal.InHouseApiKey) },
+    InvokedTargets = new[] { nameof(IPublishInternal.PublishNuGet) })]
+class Build : MauiBuild, ICompileLibrary, IPublishInternal
 {
     public static int Main () => Execute<Build>();
 

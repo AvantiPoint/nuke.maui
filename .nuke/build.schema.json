@@ -77,6 +77,14 @@
             "VSCode"
           ]
         },
+        "InHouseApiKey": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "InHouseNugetFeed": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
@@ -122,9 +130,12 @@
             "enum": [
               "CompileAndroid",
               "CompileIos",
+              "CompileLib",
+              "CompileMacCatalyst",
               "DownloadProvisioningProfile",
               "GenerateJwt",
               "InstallWorkload",
+              "PublishNuGet",
               "Restore",
               "RestoreIOSCertificate",
               "RestoreKeystore"
@@ -143,9 +154,12 @@
             "enum": [
               "CompileAndroid",
               "CompileIos",
+              "CompileLib",
+              "CompileMacCatalyst",
               "DownloadProvisioningProfile",
               "GenerateJwt",
               "InstallWorkload",
+              "PublishNuGet",
               "Restore",
               "RestoreIOSCertificate",
               "RestoreKeystore"

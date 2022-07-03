@@ -9,15 +9,15 @@
 #
 #     - To trigger manual generation invoke:
 #
-#         nuke --generate-configuration GitHubActions_ci --host GitHubActions
+#         nuke --generate-configuration GitHubActions_pr --host GitHubActions
 #
 # </auto-generated>
 # ------------------------------------------------------------------------------
 
-name: ci
+name: pr
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 
@@ -93,25 +93,3 @@ jobs:
         with:
           name: nuget
           path: Artifacts
-  publish-internal:
-    name: publish-internal
-    needs: [compile-lib,android-build,ios-build]
-    runs-on: windows-latest
-    steps:
-      - name: Download 'nuget'
-        uses: actions/download-artifact@v3
-        with:
-          name: nuget
-          path: artifacts
-      - name: Cache .nuke/temp, ~/.nuget/packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './build.cmd PublishNuGet'
-        run: ./build.cmd PublishNuGet
-        env:
-          InHouseNugetFeed: ${{ secrets.IN_HOUSE_NUGET_FEED }}
-          InHouseApiKey: ${{ secrets.IN_HOUSE_API_KEY }}
