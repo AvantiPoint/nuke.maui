@@ -1,0 +1,8 @@
+{
+  "solution": {
+    "path": "AvantiPoint.Nuke.Maui.sln",
+    "projects": [
+      "src\\AvantiPoint.Nuke.Maui\\AvantiPoint.Nuke.Maui.csproj"
+    ]
+  }
+}

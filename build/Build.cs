@@ -6,11 +6,16 @@ using AvantiPoint.Nuke.Maui.CI;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Tools.NerdbankGitVersioning;
 
-[GitHubWorkflow("maui-build",
+[GitHubWorkflow("ci",
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
     JobNames = new[] { "android-build", "ios-build", "compile-lib", "publish-internal" } )]
+[GitHubWorkflow("pr",
+    OnPullRequestBranches = new[] { MasterBranch },
+    FetchDepth = 0,
+    AutoGenerate = true,
+    JobNames = new[] { "android-build", "ios-build", "compile-lib" } )]
 [WorkflowJob(
     Name = "android-build",
     //ArtifactName = "android",
@@ -40,7 +45,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
 [WorkflowJob(
     Name = "compile-lib",
     ArtifactName = "nuget",
-    InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib) } )]
+    InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib), "--solution AvantiPoint.Nuke.Maui.sln" } )]
 [WorkflowJob(
     Name = "publish-internal",
     Needs = new[] { "compile-lib", "android-build", "ios-build" },
