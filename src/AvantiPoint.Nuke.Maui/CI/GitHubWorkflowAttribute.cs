@@ -132,6 +132,9 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
             }
         }
 
+        if (job.Image == HostedAgent.Mac && !job.DotNetSdks.Any())
+            job.DotNetSdks = new[] { "6.0.x" };
+
         yield return new GitHubActionsUseDotNetVersionStep
         {
             Sdks = job.DotNetSdks
