@@ -115,16 +115,13 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
 
     private IEnumerable<GitHubActionsStep> GetSteps(WorkflowJobAttribute job, IEnumerable<ExecutableTarget> targets)
     {
-        if(job.CheckoutRepository)
+        yield return new GitHubActionsCheckoutStep
         {
-            yield return new GitHubActionsCheckoutStep
-            {
-                Submodules = _submodules,
-                FetchDepth = _fetchDepth
-            };
-        }
+            Submodules = _submodules,
+            FetchDepth = _fetchDepth
+        };
 
-        if(job.DownloadArtifacts.Any())
+        if (job.DownloadArtifacts.Any())
         {
             foreach(var artifact in job.DownloadArtifacts)
             {

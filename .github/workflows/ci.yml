@@ -98,6 +98,9 @@ jobs:
     needs: [compile-lib,android-build,ios-build]
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Download 'nuget'
         uses: actions/download-artifact@v3
         with:

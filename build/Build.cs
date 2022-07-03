@@ -50,7 +50,6 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     Name = "publish-internal",
     Needs = new[] { "compile-lib", "android-build", "ios-build" },
     DownloadArtifacts = new[] { "nuget" },
-    CheckoutRepository = false,
     ImportSecrets = new[]
     {
         nameof(IPublishInternal.InHouseNugetFeed),

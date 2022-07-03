@@ -25,8 +25,6 @@ public class WorkflowJobAttribute : Attribute
 
     public string ArtifactName { get; set; } = "";
 
-    public bool CheckoutRepository { get; set; } = true;
-
     public string[] DownloadArtifacts { get; set; } = Array.Empty<string>();
 
     public string[] DotNetSdks { get; set; } = Array.Empty<string>();
