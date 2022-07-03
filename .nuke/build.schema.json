@@ -77,10 +77,6 @@
             "VSCode"
           ]
         },
-        "IgnoreFailedSources": {
-          "type": "boolean",
-          "description": "Ignore unreachable sources during Restore"
-        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
@@ -109,6 +105,10 @@
           "items": {
             "type": "string"
           }
+        },
+        "ProjectName": {
+          "type": "string",
+          "description": "The name of the MAUI Single Project to build"
         },
         "Root": {
           "type": "string",

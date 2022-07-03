@@ -26,4 +26,9 @@ internal static class BuildProps
 
         public const string MtouchLink = nameof(MtouchLink);
     }
+
+    public static class MacCatalyst
+    {
+        public const string CreatePackage = nameof(CreatePackage);
+    }
 }

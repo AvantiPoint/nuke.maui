@@ -14,10 +14,10 @@ namespace AvantiPoint.Nuke.Maui.Android;
 public interface IHazAndroidBuild :
     IHazArtifacts,
     IHazConfiguration,
+    IHazProject,
     IDotNetRestore,
     IHazMauiWorkload,
     IHazAndroidKeystore,
-    IHazSolution,
     IHazMauiAppVersion,
     IHazTimeout
 {
@@ -25,10 +25,10 @@ public interface IHazAndroidBuild :
         .DependsOn<IHazAndroidKeystore>()
         .DependsOn<IHazMauiWorkload>()
         .DependsOn<IDotNetRestore>()
-        .Produces(ArtifactsDirectory)
+        .Produces(ArtifactsDirectory / "android-build" / "*-Signed.apk", ArtifactsDirectory / "android-build" / "*-Signed.aab")
         .Executes(() =>
         {
-            var targetFramework = Solution.GetTargetFramework("android");
+            var targetFramework = Project.GetTargetFramework("android");
             targetFramework.NotNullOrEmpty("Could not locate a valid Android Target Framework");
 
             if (!string.IsNullOrEmpty(ApplicationDisplayVersion))
@@ -39,6 +39,7 @@ public interface IHazAndroidBuild :
 
             DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
+                    .SetProject(Project)
                     .SetFramework(targetFramework)
                     .AddProperty(BuildProps.Android.AndroidSigningKeyPass, AndroidKeystorePassword)
                     .AddProperty(BuildProps.Android.AndroidSigningStorePass, AndroidKeystorePassword)
@@ -48,8 +49,8 @@ public interface IHazAndroidBuild :
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
-                    .SetProcessExecutionTimeout(CompileTimeout.Milliseconds)
-                    .SetOutput(ArtifactsDirectory));
+                    //.SetProcessExecutionTimeout(CompileTimeout.Minutes)
+                    .SetOutput(ArtifactsDirectory / "android-build"));
 
             Assert.True(Directory.EnumerateFiles(ArtifactsDirectory, "*-Signed.apk").Any(), "No Signed APK was found in the output directory");
             Assert.True(Directory.EnumerateFiles(ArtifactsDirectory, "*-Signed.aab").Any(), "No Signed AAB was found in the output directory");

@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{F306C03B-771C-4C55-B58F-B6749DC115A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiCIDemo", "sample\MauiCIDemo\MauiCIDemo.csproj", "{0DDD7566-4571-4AE8-A315-BFFB5FB909E0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DDD7566-4571-4AE8-A315-BFFB5FB909E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DDD7566-4571-4AE8-A315-BFFB5FB909E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DDD7566-4571-4AE8-A315-BFFB5FB909E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DDD7566-4571-4AE8-A315-BFFB5FB909E0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0DDD7566-4571-4AE8-A315-BFFB5FB909E0} = {F306C03B-771C-4C55-B58F-B6749DC115A7}
+	EndGlobalSection
+EndGlobal

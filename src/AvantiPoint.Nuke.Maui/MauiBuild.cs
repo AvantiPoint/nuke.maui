@@ -8,7 +8,8 @@ namespace AvantiPoint.Nuke.Maui;
 
 public abstract class MauiBuild : NukeBuild,
     IHazAndroidBuild,
-    IHazIOSBuild
+    IHazIOSBuild,
+    IHazMacCatalystBuild
 {
     public abstract string ApplicationDisplayVersion { get; }
     public abstract long ApplicationVersion { get; }

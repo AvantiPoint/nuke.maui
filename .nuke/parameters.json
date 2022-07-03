@@ -1,4 +1,5 @@
 {
   "$schema": "./build.schema.json",
-  "Solution": "AvantiPoint.Nuke.Maui.sln"
+  "Solution": "Demo.sln",
+  "ProjectName": "MauiCIDemo"
 }
