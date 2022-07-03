@@ -1,26 +1,32 @@
-using System.Reflection;
-using Nuke.Common;
-using Nuke.Common.CI;
-using Nuke.Common.CI.GitHubActions;
-using Nuke.Common.Utilities.Collections;
+using System;
 using AvantiPoint.Nuke.Maui;
 using AvantiPoint.Nuke.Maui.Android;
 using AvantiPoint.Nuke.Maui.Apple;
+using AvantiPoint.Nuke.Maui.CI;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Tools.NerdbankGitVersioning;
 
-[GitHubActions("android-build",
-    GitHubActionsImage.WindowsLatest,
+[GitHubWorkflow("maui-build",
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
+    JobNames = new[] { "android-build", "ios-build" } )]
+[WorkflowJob(
+    Name = "android-build",
+    //ArtifactName = "android",
+    Image = GitHubActionsImage.WindowsLatest,
     InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
-    ImportSecrets = new[] { nameof(IHazAndroidKeystore.AndroidKeystoreName), nameof(IHazAndroidKeystore.AndroidKeystoreB64), nameof(IHazAndroidKeystore.AndroidKeystorePassword) }
-    )]
-[GitHubActions("ios-build",
-    GitHubActionsImage.MacOsLatest,
-    FetchDepth = 0,
-    AutoGenerate = true,
-    OnPushBranches = new[] { MasterBranch },
+    ImportSecrets = new[]
+    {
+        nameof(IHazAndroidKeystore.AndroidKeystoreName),
+        nameof(IHazAndroidKeystore.AndroidKeystoreB64),
+        nameof(IHazAndroidKeystore.AndroidKeystorePassword)
+    })]
+
+[WorkflowJob(
+    Name = "ios-build",
+    //ArtifactName = "ios",
+    Image = GitHubActionsImage.MacOsLatest,
     InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
     ImportSecrets = new[]
     {
@@ -30,8 +36,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
          nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
          nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
          nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
-    }
-)]
+    })]
 class Build : MauiBuild
 {
     public static int Main () => Execute<Build>();
@@ -44,5 +49,5 @@ class Build : MauiBuild
     readonly NerdbankGitVersioning NerdbankVersioning;
 
     public override string ApplicationDisplayVersion => NerdbankVersioning.NuGetPackageVersion;
-    public override long ApplicationVersion => GitHubActions.RunId;
+    public override long ApplicationVersion => IsLocalBuild ? DateTimeOffset.Now.ToUnixTimeSeconds() / 60 : GitHubActions.RunId;
 }

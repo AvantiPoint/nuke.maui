@@ -6,7 +6,7 @@ The AvantiPoint Nuke Maui library is an extension library for [Nuke Build](https
 | -------- | ------ |
 | Android | Supported |
 | iOS | In Progress |
-| macOS | Planned |
+| macOS | In Progress |
 | Windows | Planned |
 | Tizen | Planned |
 
@@ -60,25 +60,32 @@ As installing workloads requires sudo access which can be a bit of a pain when r
 
 The Nuke Targets include a target that will reach out to the Apple AppStore Connect API to retrieve a specified Provisioning Profile. This is particularly useful for CI Builds as it ensures that as long as your provisioning profile is active you will always have the latest valid profile. This can really save time when you need to regenerate the provisioning profile for new team members, add new devices, or renew expiring profiles.
 
-## Secrets
+## Creating Workflows
 
-As you will have various secrets required for iOS & Android you will need to be sure to mark them as required in your build definitions
+The AvantiPoint.Nuke.Maui library includes some custom attributes that can be used to create custom GitHub Workflows with multiple jobs per workflow. This can be done by defining WorkflowJobs and GitHubWorkflows. The Workflow can define as many Job Names as are required.
 
 ```cs
-[GitHubActions("android-build",
-    GitHubActionsImage.WindowsLatest,
+[GitHubWorkflow("maui-build",
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
+    JobNames = new[] { "android-build", "ios-build" } )]
+[WorkflowJob(
+    Name = "android-build",
+    //ArtifactName = "android",
+    Image = GitHubActionsImage.WindowsLatest,
     InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
-    ImportSecrets = new[] { nameof(IHazAndroidKeystore.AndroidKeystoreName), nameof(IHazAndroidKeystore.AndroidKeystoreB64), nameof(IHazAndroidKeystore.AndroidKeystorePassword) }
-    )]
-[GitHubActions("ios-build",
-    // this needs to manually be updated 'macos-12`
-    GitHubActionsImage.MacOsLatest,
-    FetchDepth = 0,
-    AutoGenerate = true,
-    OnPushBranches = new[] { MasterBranch },
+    ImportSecrets = new[]
+    {
+        nameof(IHazAndroidKeystore.AndroidKeystoreName),
+        nameof(IHazAndroidKeystore.AndroidKeystoreB64),
+        nameof(IHazAndroidKeystore.AndroidKeystorePassword)
+    })]
+
+[WorkflowJob(
+    Name = "ios-build",
+    //ArtifactName = "ios",
+    Image = GitHubActionsImage.MacOsLatest,
     InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
     ImportSecrets = new[]
     {
@@ -88,8 +95,7 @@ As you will have various secrets required for iOS & Android you will need to be 
          nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
          nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
          nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
-    }
-)]
+    })]
 public class Build : MauiBuild
 {
     public static int Main () => Execute<Build>();
@@ -104,3 +110,14 @@ public class Build : MauiBuild
     public override string ApplicationDisplayVersion => NerdbankVersioning.NuGetPackageVersion;
     public override long ApplicationVersion => GitHubActions.RunId;
 }
+```
+
+## Running Locally
+
+To run locally choose you will need to ensure that your environment has been configured with the secrets required to sign your app. Start by running `nuke :secrets` to add the values of the secrets you will need for the iOS or Android Build. Next pick the target you want to run and run `nuke` with the target name.
+
+```bash
+nuke CompileAndroid
+
+nuke CompileIos
+```
