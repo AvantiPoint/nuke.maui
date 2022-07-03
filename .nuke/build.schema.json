@@ -110,6 +110,14 @@
           "type": "string",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
+        "Linker": {
+          "type": "string",
+          "enum": [
+            "Full",
+            "None",
+            "SdkOnly"
+          ]
+        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"

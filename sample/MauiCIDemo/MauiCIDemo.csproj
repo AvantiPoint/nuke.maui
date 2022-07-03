@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-ios' AND '$(Configuration)' == 'Release'">
-    <RuntimeIdentifiers>ios-arm;ios-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
   <PropertyGroup  Condition="'$(TargetFramework)' == 'net6.0-maccatalyst' AND '$(Configuration)' == 'Release'">

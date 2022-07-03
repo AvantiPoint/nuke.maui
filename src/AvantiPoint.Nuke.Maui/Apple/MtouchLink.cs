@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
+using JetBrains.Annotations;
 using Nuke.Common.Tooling;
 
 namespace AvantiPoint.Nuke.Maui.Apple;
 
+[PublicAPI]
+[Serializable]
 [TypeConverter(typeof(TypeConverter<MtouchLink>))]
 public class MtouchLink : Enumeration
 {

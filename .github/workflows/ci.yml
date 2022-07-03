@@ -92,7 +92,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: nuget
-          path: Artifacts
+          path: artifacts
   publish-internal:
     name: publish-internal
     needs: [compile-lib,android-build,ios-build]

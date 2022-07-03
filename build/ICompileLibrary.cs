@@ -5,12 +5,12 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Components;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-public interface ICompileLibrary : IHazConfiguration, IHazSolution
+public interface ICompileLibrary : IHazArtifacts, IHazConfiguration, IHazSolution
 {
     Target CompileLib => _ => _
         .DependsOn<IDotNetRestore>()
         .DependsOn<IHazMauiWorkload>()
-        .Produces(EnvironmentInfo.WorkingDirectory / "Artifacts")
+        .Produces(ArtifactsDirectory)
         .Executes(() =>
         {
             var project = Solution.AllProjects.FirstOrDefault(x => x.Name.EndsWith("Nuke.Maui"));

@@ -21,7 +21,8 @@ public interface IHazIOSBuild :
     IHazMauiAppVersion,
     IHazTimeout
 {
-    MtouchLink Linker => TryGetValue(() => Linker);
+    [Parameter]
+    MtouchLink Linker => TryGetValue(() => Linker) ?? MtouchLink.None;
 
     Target CompileIos => _ => _
         .OnlyOnMacHost()
@@ -33,10 +34,10 @@ public interface IHazIOSBuild :
             targetFramework.NotNullOrEmpty("Could not locate a valid iOS Target Framework");
 
             if(!string.IsNullOrEmpty(ApplicationDisplayVersion))
-                Log.Information($"Display Version: {ApplicationDisplayVersion}");
+                Log.Information("Display Version: {ApplicationDisplayVersion}", ApplicationDisplayVersion);
 
             if(ApplicationVersion > 0)
-                Log.Information($"Build Version: {ApplicationVersion}");
+                Log.Information("Build Version: {ApplicationVersion}", ApplicationVersion);
 
             DotNetTasks.DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)

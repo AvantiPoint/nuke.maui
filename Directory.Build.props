@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/AvantiPoint/nuke.maui</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/AvantiPoint/nuke.maui.git</RepositoryUrl>
-    <PackageOutputPath>$(MSBuildThisFileDirectory)Artifacts</PackageOutputPath>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts</PackageOutputPath>
     <PackageOutputPath Condition=" '$(BUILD_ARTIFACTSTAGINGDIRECTORY)' != '' ">$(BUILD_ARTIFACTSTAGINGDIRECTORY)</PackageOutputPath>
     <IsPackable>true</IsPackable>
     <IsPackable Condition=" $(MSBuildProjectName.Contains('Demo')) OR $(MSBuildProjectName) == '_build' ">false</IsPackable>
