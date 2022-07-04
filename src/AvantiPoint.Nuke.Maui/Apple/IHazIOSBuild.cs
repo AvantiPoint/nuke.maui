@@ -4,6 +4,7 @@ using AvantiPoint.Nuke.Maui.Apple.AppStoreConnect;
 using AvantiPoint.Nuke.Maui.Extensions;
 using JetBrains.Annotations;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Components;
@@ -43,9 +44,13 @@ public interface IHazIOSBuild :
             if(ApplicationVersion > 0)
                 Log.Information("Build Version: {ApplicationVersion}", ApplicationVersion);
 
-            var json = File.ReadAllText(TemporaryDirectory / "apple.mobileprovision");
+            var mobileProvision = TemporaryDirectory / "apple.mobileprovision";
+            Assert.True(mobileProvision.Exists(), "No Provisioning Profile cache response exists.");
+            var json = File.ReadAllText(mobileProvision);
+            json.NotNullOrEmpty("The Provisioning Profile response cache was empty.");
             var profile = JsonSerializer.Deserialize<ProfileResponse>(json);
-            var codesignKey = profile.Attributes.ProfileType switch
+            profile.NotNull("Unable to deserialize the Profile Response.");
+            var codesignKey = profile!.Attributes.ProfileType switch
             {
                 ProfileType.IOS_APP_ADHOC => "iPhone Distribution",
                 ProfileType.IOS_APP_STORE => "iPhone Distribution",
@@ -61,6 +66,7 @@ public interface IHazIOSBuild :
                     .SetFramework(targetFramework)
                     .AddProperty(BuildProps.iOS.ArchiveOnBuild, true)
                     .AddProperty(BuildProps.iOS.CodesignKey, codesignKey)
+                    .AddProperty(BuildProps.iOS.CodesignKeychain, KeychainPath)
                     .AddProperty(BuildProps.iOS.CodesignProvision, profile!.Attributes.Name)
                     .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
@@ -72,6 +78,7 @@ public interface IHazIOSBuild :
                     .SetContinuousIntegrationBuild(!IsLocalBuild)
                     .SetDeterministic(!IsLocalBuild)
                     .SetOutput(ArtifactsDirectory / "ios-build")
+                    .When(Verbosity == Verbosity.Verbose, _ => _.SetVerbosity(DotNetVerbosity.Diagnostic))
                     .When(IsLocalBuild, _ => _
                         .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
         });

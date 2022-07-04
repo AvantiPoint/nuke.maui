@@ -19,8 +19,11 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
 
     AbsolutePath P12CertifiatePath => (AbsolutePath)Path.Combine(TemporaryDirectory, "apple.p12");
 
+    AbsolutePath KeychainPath => (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) / "Library"
+                    / "Keychains" / EnvironmentInfo.WorkingDirectory.Name / GitRepository.Commit / "app-signing.keychain-db";
+
     Target RestoreIOSCertificate => _ => _
-        .OnlyOnMacHost(() => !IsLocalBuild)
+        .OnlyOnMacHost()
         .TryBefore<IDotNetRestore>()
         .BeforeMauiWorkload()
         .Unlisted()
@@ -33,31 +36,28 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
 
             try
             {
-
-                var keychainPath = (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) / "Library"
-                    / "Keychains" / EnvironmentInfo.WorkingDirectory.Name / GitRepository.Commit / "app-signing.keychain-db";
-                if(!keychainPath.Exists())
+                if(!KeychainPath.Exists())
                 {
                     SecurityCreateKeychain(settings => settings
                         .SetPassword(P12Password)
-                        .SetKeychain(keychainPath));
-                    Security($"set-keychain-settings -lut 21600 {keychainPath}");
+                        .SetKeychain(KeychainPath));
+                    Security($"set-keychain-settings -lut 21600 {KeychainPath}");
                     SecurityUnlockKeychain(_ => _
                         .SetPassword(P12Password)
-                        .SetKeychain(keychainPath));
+                        .SetKeychain(KeychainPath));
                 }
                 else
                 {
                     Log.Information("Temporary Keychain already exists. Attempting to unlock keychain");
-                    Security($"set-keychain-settings -lut 21600 {keychainPath}");
+                    Security($"set-keychain-settings -lut 21600 {KeychainPath}");
                 }
 
                 SecurityImport(_ => _
                     .SetCertificatePath(P12CertifiatePath)
-                    .SetKeychainPath(keychainPath)
+                    .SetKeychainPath(KeychainPath)
                     .SetPassword(P12Password));
 
-                Security($"list-keychain -d user -s {keychainPath}");
+                Security($"list-keychain -d user -s {KeychainPath}");
             }
             catch
             {

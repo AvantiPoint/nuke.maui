@@ -26,6 +26,8 @@ internal static class BuildProps
 
         public const string CodesignKey = nameof(CodesignKey);
 
+        public const string CodesignKeychain = nameof(CodesignKeychain);
+
         public const string CodesignProvision = nameof(CodesignProvision);
 
         public const string MtouchLink = nameof(MtouchLink);
