@@ -39,6 +39,8 @@ public interface IHazWinUIBuild :
                 settings.SetConfiguration(Configuration)
                     .SetProject(Project)
                     .SetFramework(targetFramework)
+                    .AddProperty("GenerateAppxPackageOnBuild", true)
+                    .AddProperty("AppxPackageSigningEnabled", false)
                     .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _
