@@ -9,6 +9,7 @@ namespace AvantiPoint.Nuke.Maui;
 public interface IDotNetRestore : IHazProject
 {
     Target Restore => _ => _
+        .DependsOn<IDotNetClean>()
         .Executes(() => DotNetRestore(_ => _
             .SetProjectFile(Project)));
 }

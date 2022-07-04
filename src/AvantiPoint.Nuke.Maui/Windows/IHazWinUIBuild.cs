@@ -13,6 +13,7 @@ public interface IHazWinUIBuild :
     IHazArtifacts,
     IHazConfiguration,
     IHazProject,
+    IDotNetClean,
     IDotNetRestore,
     IHazMauiWorkload,
     IHazMauiAppVersion,
@@ -46,8 +47,20 @@ public interface IHazWinUIBuild :
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .SetProcessExecutionTimeout(CompileTimeout)
-                    .SetOutput(outputDir));
+                    .SetContinuousIntegrationBuild(!IsLocalBuild)
+                    .SetDeterministic(!IsLocalBuild)
+                    .SetProcessArgumentConfigurator(_ => _.Add("/bl")));
 
-            //Assert.NotEmpty(outputDir.GlobFiles("*.msix"), "Could not locate an MSIX file in the publish directory");
+            var binDir = Project.Directory / "bin" / Configuration / targetFramework;
+            var appPackages = binDir.GlobDirectories("**/AppPackages");
+
+            Assert.NotEmpty(appPackages, "Could not locate an AppPackages directory");
+            Assert.HasSingleItem(appPackages, "Found more than one AppPackages directory");
+
+            var dir = appPackages.First();
+            Log.Information("Located AppPackages at '{0}'", dir);
+
+            dir.CopyDirectory(outputDir / "AppPackages");
+            Assert.NotEmpty(outputDir.GlobFiles("**/*.msix"), "Could not locate an MSIX file in the publish directory");
         });
 }

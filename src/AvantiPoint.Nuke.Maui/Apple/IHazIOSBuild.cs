@@ -16,13 +16,14 @@ public interface IHazIOSBuild :
     IHazConfiguration,
     IHazAppleCertificate,
     IRestoreAppleProvisioningProfile,
+    IDotNetClean,
     IDotNetRestore,
     IHazMauiWorkload,
     IHazMauiAppVersion,
     IHazTimeout
 {
     [Parameter]
-    MtouchLink Linker => TryGetValue(() => Linker) ?? MtouchLink.None;
+    MtouchLink Linker => TryGetValue(() => Linker);
 
     Target CompileIos => _ => _
         .OnlyOnMacHost()
@@ -48,8 +49,11 @@ public interface IHazIOSBuild :
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
-                    .AddProperty(BuildProps.iOS.MtouchLink, Linker)
+                    .When(Linker != null, _ => _
+                        .AddProperty(BuildProps.iOS.MtouchLink, Linker))
                     .SetProcessExecutionTimeout(CompileTimeout)
+                    .SetContinuousIntegrationBuild(!IsLocalBuild)
+                    .SetDeterministic(!IsLocalBuild)
                     .SetOutput(ArtifactsDirectory / "ios-build"));
         });
 }

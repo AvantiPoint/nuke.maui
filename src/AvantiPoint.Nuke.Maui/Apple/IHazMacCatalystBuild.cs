@@ -10,6 +10,7 @@ namespace AvantiPoint.Nuke.Maui.Apple;
 
 public interface IHazMacCatalystBuild :
     IHazConfiguration,
+    IDotNetClean,
     IDotNetRestore,
     IHazAppleCertificate,
     IRestoreAppleProvisioningProfile,
@@ -47,6 +48,8 @@ public interface IHazMacCatalystBuild :
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     //.AddProperty(BuildProps.iOS.MtouchLink, Linker)
                     .SetProcessExecutionTimeout(CompileTimeout)
+                    .SetContinuousIntegrationBuild(!IsLocalBuild)
+                    .SetDeterministic(!IsLocalBuild)
                     .SetOutput(outputDirectory));
 
             Assert.NotEmpty(outputDirectory.GlobFiles("*.pkg"), "Could not locate a Pkg file in the publish directory");

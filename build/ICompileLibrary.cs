@@ -18,6 +18,7 @@ public interface ICompileLibrary : IHazArtifacts, IHazConfiguration, IHazProject
             DotNetBuild(settings => settings
                 .SetProjectFile(Project)
                 .SetConfiguration(Configuration)
+                .SetContinuousIntegrationBuild(!IsLocalBuild)
                 .SetDeterministic(!IsLocalBuild));
         });
 }

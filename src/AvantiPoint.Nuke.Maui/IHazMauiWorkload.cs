@@ -13,7 +13,8 @@ public interface IHazMauiWorkload : INukeBuild
         .TryBefore<IDotNetRestore>()
         .Executes(() =>
         {
-            DotNet("nuget locals all --clear");
+            if(!IsLocalBuild)
+                DotNet("nuget locals all --clear");
 
             var output = DotNet("workload list");
             if (output.Any(x => x.Text.StartsWith("maui")))

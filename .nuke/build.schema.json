@@ -161,6 +161,7 @@
           "items": {
             "type": "string",
             "enum": [
+              "CleanArtifacts",
               "CodeSign",
               "CompileAndroid",
               "CompileIos",
@@ -187,6 +188,7 @@
           "items": {
             "type": "string",
             "enum": [
+              "CleanArtifacts",
               "CodeSign",
               "CompileAndroid",
               "CompileIos",

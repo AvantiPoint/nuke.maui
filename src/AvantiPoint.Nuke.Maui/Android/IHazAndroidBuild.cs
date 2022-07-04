@@ -17,6 +17,7 @@ public interface IHazAndroidBuild :
     IHazArtifacts,
     IHazConfiguration,
     IHazProject,
+    IDotNetClean,
     IDotNetRestore,
     IHazMauiWorkload,
     IHazAndroidKeystore,
@@ -54,6 +55,8 @@ public interface IHazAndroidBuild :
                     .When(ApplicationVersion > 0, _ => _
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .SetProcessExecutionTimeout(CompileTimeout)
+                    .SetContinuousIntegrationBuild(!IsLocalBuild)
+                    .SetDeterministic(!IsLocalBuild)
                     .SetOutput(outputDirectory));
 
             Assert.NotEmpty(outputDirectory.GlobFiles("*-Signed.apk", "*-Signed.aab"), "No Signed APK or AAB files could be found");
