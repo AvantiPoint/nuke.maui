@@ -83,6 +83,6 @@ class Build : MauiBuild, ICompileLibrary, IPublishInternal, ICodeSignNuget
     [NerdbankGitVersioning]
     readonly NerdbankGitVersioning NerdbankVersioning;
 
-    public override string ApplicationDisplayVersion => NerdbankVersioning.NuGetPackageVersion;
+    public override string ApplicationDisplayVersion => NerdbankVersioning.SimpleVersion;
     public override long ApplicationVersion => IsLocalBuild ? (DateTimeOffset.Now.ToUnixTimeSeconds() - new DateTimeOffset(2022, 7, 1, 0, 0, 0, TimeSpan.Zero).ToUnixTimeSeconds()) / 60 : GitHubActions.RunNumber;
 }
