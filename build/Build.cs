@@ -45,7 +45,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
 [WorkflowJob(
     Name = "compile-lib",
     ArtifactName = "nuget",
-    InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib), "--solution AvantiPoint.Nuke.Maui.sln" } )]
+    InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib), "--solution AvantiPoint.Nuke.Maui.sln", "--project-name AvantiPoint.Nuke.Maui" } )]
 [WorkflowJob(
     Name = "publish-internal",
     Needs = new[] { "compile-lib", "android-build", "ios-build" },

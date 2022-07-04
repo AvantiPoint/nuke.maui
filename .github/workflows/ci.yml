@@ -91,8 +91,8 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
-      - name: Run './build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln'
-        run: ./build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln
+      - name: Run './build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln --project-name AvantiPoint.Nuke.Maui'
+        run: ./build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln --project-name AvantiPoint.Nuke.Maui
       - uses: actions/upload-artifact@v1
         with:
           name: nuget

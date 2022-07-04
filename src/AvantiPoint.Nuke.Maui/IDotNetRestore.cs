@@ -10,5 +10,5 @@ public interface IDotNetRestore : IHazProject
 {
     Target Restore => _ => _
         .Executes(() => DotNetRestore(_ => _
-            .SetProjectFile(Solution)));
+            .SetProjectFile(Project)));
 }

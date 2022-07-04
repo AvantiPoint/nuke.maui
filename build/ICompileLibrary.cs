@@ -5,19 +5,18 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Components;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-public interface ICompileLibrary : IHazArtifacts, IHazConfiguration, IHazSolution
+public interface ICompileLibrary : IHazArtifacts, IHazConfiguration, IHazProject
 {
     Target CompileLib => _ => _
         .DependsOn<IDotNetRestore>()
-        .DependsOn<IHazMauiWorkload>()
         .Produces(ArtifactsDirectory)
         .Executes(() =>
         {
-            var project = Solution.AllProjects.FirstOrDefault(x => x.Name.EndsWith("Nuke.Maui"));
-            project.NotNull("Could not locate the Nuke Maui Project");
+            Project.NotNull("Could not locate a project");
+            Assert.True("AvantiPoint.Nuke.Maui" == Project.Name, "The selected project is not the Nuke.Maui Project");
 
             DotNetBuild(settings => settings
-                .SetProjectFile(project)
+                .SetProjectFile(Project)
                 .SetConfiguration(Configuration)
                 .SetDeterministic(!IsLocalBuild));
         });
