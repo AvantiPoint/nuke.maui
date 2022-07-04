@@ -36,7 +36,7 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
 
                 var keychainPath = (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) / "Library"
                     / "Keychains" / EnvironmentInfo.WorkingDirectory.Name / GitRepository.Commit / "app-signing.keychain-db";
-                if(keychainPath.Exists())
+                if(!keychainPath.Exists())
                 {
                     SecurityCreateKeychain(settings => settings
                         .SetPassword(P12Password)
