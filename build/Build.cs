@@ -3,6 +3,7 @@ using AvantiPoint.Nuke.Maui;
 using AvantiPoint.Nuke.Maui.Android;
 using AvantiPoint.Nuke.Maui.Apple;
 using AvantiPoint.Nuke.Maui.CI;
+using AvantiPoint.Nuke.Maui.Windows;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Tools.NerdbankGitVersioning;
 
@@ -10,14 +11,14 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
-    JobNames = new[] { "android-build", "ios-build", "compile-lib", "publish-internal" } )]
+    JobNames = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild, PublishInternal } )]
 [GitHubWorkflow("pr",
     OnPullRequestBranches = new[] { MasterBranch },
     FetchDepth = 0,
     AutoGenerate = true,
-    JobNames = new[] { "android-build", "ios-build", "compile-lib" } )]
+    JobNames = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild } )]
 [WorkflowJob(
-    Name = "android-build",
+    Name = AndroidBuild,
     //ArtifactName = "android",
     Image = HostedAgent.Windows,
     InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
@@ -27,9 +28,8 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
         nameof(IHazAndroidKeystore.AndroidKeystoreB64),
         nameof(IHazAndroidKeystore.AndroidKeystorePassword)
     })]
-
 [WorkflowJob(
-    Name = "ios-build",
+    Name = IOSBuild,
     //ArtifactName = "ios",
     Image = HostedAgent.Mac,
     InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
@@ -43,12 +43,16 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
          nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
     })]
 [WorkflowJob(
-    Name = "compile-lib",
+    Name = WinUIBuild,
+    Image = HostedAgent.Windows,
+    InvokedTargets = new[] { nameof(IHazWinUIBuild.CompileWindows) })]
+[WorkflowJob(
+    Name = LibraryBuild,
     ArtifactName = "nuget",
     InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib), "--solution AvantiPoint.Nuke.Maui.sln", "--project-name AvantiPoint.Nuke.Maui" } )]
 [WorkflowJob(
-    Name = "publish-internal",
-    Needs = new[] { "compile-lib", "android-build", "ios-build" },
+    Name = PublishInternal,
+    Needs = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild },
     DownloadArtifacts = new[] { "nuget" },
     ImportSecrets = new[]
     {
@@ -63,6 +67,13 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     InvokedTargets = new[] { nameof(IPublishInternal.PublishNuGet) })]
 class Build : MauiBuild, ICompileLibrary, IPublishInternal, ICodeSignNuget
 {
+    public const string WinUIBuild = "windows-build";
+    public const string AndroidBuild = "android-build";
+    public const string IOSBuild = "ios-build";
+    public const string MacCatalystBuild = "maccatalyst-build";
+    public const string LibraryBuild = "compile-lib";
+    public const string PublishInternal = "publish-internal";
+
     public static int Main () => Execute<Build>();
 
     const string MasterBranch = "master";

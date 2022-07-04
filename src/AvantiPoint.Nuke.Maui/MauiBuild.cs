@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using AvantiPoint.Nuke.Maui.Android;
 using AvantiPoint.Nuke.Maui.Apple;
+using AvantiPoint.Nuke.Maui.Windows;
 using Nuke.Common;
 using Nuke.Common.Utilities.Collections;
 
@@ -9,7 +10,8 @@ namespace AvantiPoint.Nuke.Maui;
 public abstract class MauiBuild : NukeBuild,
     IHazAndroidBuild,
     IHazIOSBuild,
-    IHazMacCatalystBuild
+    IHazMacCatalystBuild,
+    IHazWinUIBuild
 {
     public abstract string ApplicationDisplayVersion { get; }
     public abstract long ApplicationVersion { get; }

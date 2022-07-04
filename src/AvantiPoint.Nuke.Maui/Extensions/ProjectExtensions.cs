@@ -17,5 +17,5 @@ internal static class ProjectExtensions
     public static string? GetTargetFramework(this Project project, string platform) =>
         project.GetTargetFrameworks()
             .Distinct()
-            .FirstOrDefault(tfm => tfm.EndsWith($"-{platform}"));
+            .FirstOrDefault(tfm => tfm.Contains($"-{platform}"));
 }

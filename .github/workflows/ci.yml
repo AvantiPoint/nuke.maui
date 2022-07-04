@@ -77,6 +77,26 @@ jobs:
         with:
           name: ios-build
           path: artifacts/ios-build
+  windows-build:
+    name: windows-build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Cache .nuke/temp, ~/.nuget/packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
+      - name: Run './build.cmd CompileWindows'
+        run: ./build.cmd CompileWindows
+      - uses: actions/upload-artifact@v1
+        with:
+          name: windows-build
+          path: artifacts/windows-build
   compile-lib:
     name: compile-lib
     runs-on: windows-latest
@@ -99,7 +119,7 @@ jobs:
           path: artifacts
   publish-internal:
     name: publish-internal
-    needs: [compile-lib,android-build,ios-build]
+    needs: [compile-lib,android-build,ios-build,windows-build]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
