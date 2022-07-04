@@ -25,12 +25,12 @@ public interface IRestoreAppleProvisioningProfile : IUsesAppStoreConnect
         .Requires(() => AppleKeyId)
         .Requires(() => AppleProfileId)
         .Requires(() => AppleAuthKeyP8)
-        .Executes(() =>
+        .Executes(async () =>
         {
             bool ActiveProfile(ProfileResponse profile) =>
                 profile.Id == AppleProfileId && profile.Attributes.ProfileState == ProfileState.ACTIVE;
 
-            var profileResponse = GetProvisioningProfiles();
+            var profileResponse = await GetProvisioningProfiles();
             Assert.NotEmpty(profileResponse.Data, "No Provisioning Profiles found.");
             Assert.True(profileResponse.Data.Any(x => x.Id == AppleProfileId),
                 $"No profile found with the id: {AppleProfileId}");
@@ -56,7 +56,7 @@ public interface IRestoreAppleProvisioningProfile : IUsesAppStoreConnect
                 File.WriteAllBytes(filePath, data);
                 Log.Information(messageTemplate: "Downloaded Provisioning Profile: {0}",
                     propertyValue: profile.Attributes.Name);
-                Log.Information(File.ReadAllText(filePath));
+                Log.Debug(File.ReadAllText(filePath));
             }
         });
 }

@@ -29,12 +29,10 @@ public interface IUsesAppStoreConnect : INukeBuild
             Log.Information("JWT: {token}", token);
         });
 
-    GetProfileResponse GetProvisioningProfiles()
+    async Task<GetProfileResponse> GetProvisioningProfiles()
     {
         var client = AppStoreConnectApi.GetClient(GenerateToken());
-        var responseTask = client.GetProfiles();
-        responseTask.Wait();
-        using var response = responseTask.Result;
+        using var response = await client.GetProfiles();
         Assert.True(response.IsSuccessStatusCode, $"Unable to successfully connect to the AppStore Connect API. ({response.StatusCode})");
         response.Content.NotNull("AppStore Connect API Response produced an empty response.");
         return response.Content!;

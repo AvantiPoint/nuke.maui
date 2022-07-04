@@ -34,8 +34,6 @@ public interface IHazAppleCertificate : INukeBuild
                 return;
             }
 
-            //Security
-
             var data = Convert.FromBase64String(P12B64);
             File.WriteAllBytes(P12CertifiatePath, data);
 
