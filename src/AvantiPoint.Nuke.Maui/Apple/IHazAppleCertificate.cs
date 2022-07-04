@@ -28,12 +28,6 @@ public interface IHazAppleCertificate : INukeBuild
         .Requires(() => P12Password)
         .Executes(() =>
         {
-            if(P12CertifiatePath.Exists())
-            {
-                Log.Information("P12 already appears to have been restored. To force the import please delete the cached p12 in teh temporary directory.");
-                return;
-            }
-
             var data = Convert.FromBase64String(P12B64);
             File.WriteAllBytes(P12CertifiatePath, data);
 

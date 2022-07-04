@@ -65,7 +65,7 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     InvokedTargets = new[] { nameof(ICompileLibrary.CompileLib), "--solution AvantiPoint.Nuke.Maui.sln", "--project-name AvantiPoint.Nuke.Maui" } )]
 [WorkflowJob(
     Name = PublishInternal,
-    Needs = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild },
+    Needs = new[] { LibraryBuild, AndroidBuild, IOSBuild, MacCatalystBuild, WinUIBuild },
     DownloadArtifacts = new[] { "nuget" },
     ImportSecrets = new[]
     {
