@@ -142,8 +142,9 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
 
         if (job.CacheKeyFiles.Any())
         {
-            yield return new GitHubActionsCacheStep
+            yield return new GitHubActionsCacheStepV3
             {
+                JobName = job.Name,
                 IncludePatterns = job.CacheIncludePatterns,
                 ExcludePatterns = job.CacheExcludePatterns,
                 KeyFiles = job.CacheKeyFiles
@@ -175,7 +176,7 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
                 var name = string.IsNullOrEmpty(job.ArtifactName)
                     ? artifacts[0]!.ToString().TrimStart(artifacts[0]!.Parent.ToString()).TrimStart('/', '\\')
                     : job.ArtifactName;
-                yield return new GitHubActionsArtifactStep
+                yield return new GitHubActionsUploadArtifactV3
                 {
                     Name = name,
                     Path = NukeBuild.RootDirectory.GetUnixRelativePathTo(artifacts[0])
@@ -187,7 +188,7 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
                 {
                     if (artifact is null) continue;
 
-                    yield return new GitHubActionsArtifactStep
+                    yield return new GitHubActionsUploadArtifactV3
                     {
                         Name = artifact.ToString().TrimStart(artifact.Parent.ToString()).TrimStart('/', '\\'),
                         Path = NukeBuild.RootDirectory.GetUnixRelativePathTo(artifact)

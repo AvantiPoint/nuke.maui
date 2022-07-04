@@ -44,7 +44,7 @@ public abstract class MauiBuild : NukeBuild,
             "╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝░░╚══╝░░░╚═╝░░░╚═╝╚═╝░░░░░░╚════╝░╚═╝╚═╝░░╚══╝░░░╚═╝░░░",
         };
 
-    private void Debug(string? text = null)
+    private static void Debug(string? text = null)
     {
         var hostType = typeof(Host);
         var method = hostType.GetMethod("Debug", BindingFlags.Static | BindingFlags.NonPublic);

@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Nuke.Common.CI.GitHubActions;
 
 namespace AvantiPoint.Nuke.Maui.CI;
 
@@ -17,7 +16,7 @@ public class WorkflowJobAttribute : Attribute
 
     public string[] ImportSecrets { get; set; } = Array.Empty<string>();
 
-    public string[] CacheIncludePatterns { get; set; } = { ".nuke/temp", "~/.nuget/packages" };
+    public string[] CacheIncludePatterns { get; set; } = { "~/.nuget/packages" };
     public string[] CacheExcludePatterns { get; set; } = Array.Empty<string>();
     public string[] CacheKeyFiles { get; set; } = { "**/global.json", "**/*.csproj" };
 
