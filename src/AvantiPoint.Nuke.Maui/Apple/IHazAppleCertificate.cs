@@ -9,7 +9,7 @@ using static AvantiPoint.Nuke.Maui.Apple.SecurityTasks;
 namespace AvantiPoint.Nuke.Maui.Apple;
 
 [PublicAPI]
-public interface IHazAppleCertificate : INukeBuild
+public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
 {
     [Parameter("P12 Certificate must be Base64 Encoded"), Secret]
     string P12B64 => TryGetValue(() => P12B64);
@@ -20,7 +20,7 @@ public interface IHazAppleCertificate : INukeBuild
     AbsolutePath P12CertifiatePath => (AbsolutePath)Path.Combine(TemporaryDirectory, "apple.p12");
 
     Target RestoreIOSCertificate => _ => _
-        .OnlyOnMacHost()
+        .OnlyOnMacHost(() => !IsLocalBuild)
         .TryBefore<IDotNetRestore>()
         .BeforeMauiWorkload()
         .Unlisted()
@@ -33,14 +33,24 @@ public interface IHazAppleCertificate : INukeBuild
 
             try
             {
-                var keychainPath = TemporaryDirectory / "app-signing.keychain-db";
-                SecurityCreateKeychain(settings => settings
-                    .SetPassword(P12Password)
-                    .SetKeychain(keychainPath));
-                Security($"set-keychain-settings -lut 21600 {keychainPath}");
-                SecurityUnlockKeychain(_ => _
-                    .SetPassword(P12Password)
-                    .SetKeychain(keychainPath));
+
+                var keychainPath = (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) / "Library"
+                    / "Keychains" / EnvironmentInfo.WorkingDirectory.Name / GitRepository.Commit / "app-signing.keychain-db";
+                if(keychainPath.Exists())
+                {
+                    SecurityCreateKeychain(settings => settings
+                        .SetPassword(P12Password)
+                        .SetKeychain(keychainPath));
+                    Security($"set-keychain-settings -lut 21600 {keychainPath}");
+                    SecurityUnlockKeychain(_ => _
+                        .SetPassword(P12Password)
+                        .SetKeychain(keychainPath));
+                }
+                else
+                {
+                    Log.Information("Temporary Keychain already exists. Attempting to unlock keychain");
+                    Security($"set-keychain-settings -lut 21600 {keychainPath}");
+                }
 
                 SecurityImport(_ => _
                     .SetCertificatePath(P12CertifiatePath)

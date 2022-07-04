@@ -24,6 +24,10 @@ internal static class BuildProps
     {
         public const string ArchiveOnBuild = nameof(ArchiveOnBuild);
 
+        public const string CodesignKey = nameof(CodesignKey);
+
+        public const string CodesignProvision = nameof(CodesignProvision);
+
         public const string MtouchLink = nameof(MtouchLink);
     }
 

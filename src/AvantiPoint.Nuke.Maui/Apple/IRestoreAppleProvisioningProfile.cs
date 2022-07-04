@@ -1,4 +1,5 @@
-﻿using AvantiPoint.Nuke.Maui.Apple.AppStoreConnect;
+﻿using System.Text.Json;
+using AvantiPoint.Nuke.Maui.Apple.AppStoreConnect;
 using AvantiPoint.Nuke.Maui.Extensions;
 using JetBrains.Annotations;
 using Nuke.Common;
@@ -36,27 +37,28 @@ public interface IRestoreAppleProvisioningProfile : IUsesAppStoreConnect
                 $"No profile found with the id: {AppleProfileId}");
             Assert.True(profileResponse.Data.Any(ActiveProfile), "The specified Profile is currently Invalid.");
 
-            var profiles = profileResponse.Data
+            var profile = profileResponse.Data
                 .Where(ActiveProfile)
-                .ToArray();
+                .FirstOrDefault();
 
-            foreach (var profile in profiles)
+            profile.NotNull("Could not locate the Provisioning Profile");
+
+            // "$HOME/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision"
+            if (!ProfileDirectory.Exists())
             {
-                // "$HOME/Library/MobileDevice/Provisioning Profiles/${UUID}.mobileprovision"
-                if (!ProfileDirectory.Exists())
-                {
-                    Log.Information("Creating Provisioning Profiles Directory: '{ProfileDirectory}'", ProfileDirectory);
-                    Directory.CreateDirectory(ProfileDirectory);
-                }
-
-                var filePath = Path.Combine(
-                    ProfileDirectory,
-                    $"{profile.Attributes.Uuid}.mobileprovision");
-                var data = Convert.FromBase64String(profile.Attributes.ProfileContent);
-                File.WriteAllBytes(filePath, data);
-                Log.Information(messageTemplate: "Downloaded Provisioning Profile: {0}",
-                    propertyValue: profile.Attributes.Name);
-                Log.Debug(File.ReadAllText(filePath));
+                Log.Information("Creating Provisioning Profiles Directory: '{ProfileDirectory}'", ProfileDirectory);
+                Directory.CreateDirectory(ProfileDirectory);
             }
+
+            await File.WriteAllTextAsync(TemporaryDirectory / "apple.mobileprovision", JsonSerializer.Serialize(profile));
+
+            var filePath = Path.Combine(
+                ProfileDirectory,
+                $"{profile!.Attributes.Uuid}.mobileprovision");
+            var data = Convert.FromBase64String(profile.Attributes.ProfileContent);
+            File.WriteAllBytes(filePath, data);
+            Log.Information(messageTemplate: "Downloaded Provisioning Profile: {0}",
+                propertyValue: profile.Attributes.Name);
+            Log.Debug(File.ReadAllText(filePath));
         });
 }

@@ -1,4 +1,7 @@
-﻿using AvantiPoint.Nuke.Maui.Extensions;
+using System.Diagnostics;
+using System.Text.Json;
+using AvantiPoint.Nuke.Maui.Apple.AppStoreConnect;
+using AvantiPoint.Nuke.Maui.Extensions;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.Tooling;
@@ -40,11 +43,25 @@ public interface IHazIOSBuild :
             if(ApplicationVersion > 0)
                 Log.Information("Build Version: {ApplicationVersion}", ApplicationVersion);
 
+            var json = File.ReadAllText(TemporaryDirectory / "apple.mobileprovision");
+            var profile = JsonSerializer.Deserialize<ProfileResponse>(json);
+            var codesignKey = profile.Attributes.ProfileType switch
+            {
+                ProfileType.IOS_APP_ADHOC => "iPhone Distribution",
+                ProfileType.IOS_APP_STORE => "iPhone Distribution",
+                ProfileType.IOS_APP_INHOUSE => "iPhone Distribution",
+                ProfileType.IOS_APP_DEVELOPMENT => "iPhone Developer",
+                _ => string.Empty
+            };
+            codesignKey.NotNullOrEmpty("Invalid Profile Type - {ProfileType}", profile.Attributes.ProfileType.ToString());
+
             DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
                     .SetProject(Project)
                     .SetFramework(targetFramework)
                     .AddProperty(BuildProps.iOS.ArchiveOnBuild, true)
+                    .AddProperty(BuildProps.iOS.CodesignKey, codesignKey)
+                    .AddProperty(BuildProps.iOS.CodesignProvision, profile!.Attributes.Name)
                     .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _

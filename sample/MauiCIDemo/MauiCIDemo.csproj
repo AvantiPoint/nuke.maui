@@ -34,7 +34,7 @@
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <PropertyGroup  Condition="'$(TargetFramework)' == 'net6.0-maccatalyst' AND '$(Configuration)' == 'Release'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst' AND '$(Configuration)' == 'Release'">
     <!-- for Mac Catalyst -->
     <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
   </PropertyGroup>
