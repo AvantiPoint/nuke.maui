@@ -71,6 +71,8 @@ public interface IHazIOSBuild :
                     .SetProcessExecutionTimeout(CompileTimeout)
                     .SetContinuousIntegrationBuild(!IsLocalBuild)
                     .SetDeterministic(!IsLocalBuild)
-                    .SetOutput(ArtifactsDirectory / "ios-build"));
+                    .SetOutput(ArtifactsDirectory / "ios-build")
+                    .When(IsLocalBuild, _ => _
+                        .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
         });
 }

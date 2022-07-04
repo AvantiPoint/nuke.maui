@@ -49,7 +49,8 @@ public interface IHazWinUIBuild :
                     .SetProcessExecutionTimeout(CompileTimeout)
                     .SetContinuousIntegrationBuild(!IsLocalBuild)
                     .SetDeterministic(!IsLocalBuild)
-                    .SetProcessArgumentConfigurator(_ => _.Add("/bl")));
+                    .When(IsLocalBuild, _ => _
+                        .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
 
             var binDir = Project.Directory / "bin" / Configuration / targetFramework;
             var appPackages = binDir.GlobDirectories("**/AppPackages");
