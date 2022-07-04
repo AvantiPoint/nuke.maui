@@ -1,5 +1,6 @@
 ﻿using AvantiPoint.Nuke.Maui.Extensions;
 using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Components;
@@ -7,7 +8,7 @@ using Serilog;
 
 namespace AvantiPoint.Nuke.Maui.Apple;
 
-internal interface IHazMacCatalystBuild :
+public interface IHazMacCatalystBuild :
     IHazConfiguration,
     IDotNetRestore,
     IHazAppleCertificate,
@@ -25,8 +26,8 @@ internal interface IHazMacCatalystBuild :
         .Produces(ArtifactsDirectory / "maccatalyst-build")
         .Executes(() =>
         {
-            var targetFramework = Project.GetTargetFramework("maccatlyst");
-            targetFramework.NotNullOrEmpty("Could not locate a valid iOS Target Framework");
+            var targetFramework = Project.GetTargetFramework("maccatalyst");
+            targetFramework.NotNullOrEmpty("Could not locate a valid MacCatalyst Target Framework");
 
             if (!string.IsNullOrEmpty(ApplicationDisplayVersion))
                 Log.Information($"Display Version: {ApplicationDisplayVersion}");
@@ -34,6 +35,7 @@ internal interface IHazMacCatalystBuild :
             if (ApplicationVersion > 0)
                 Log.Information($"Build Version: {ApplicationVersion}");
 
+            var outputDirectory = ArtifactsDirectory / "maccatalyst-build";
             DotNetTasks.DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
                     .SetProject(Project)
@@ -45,6 +47,8 @@ internal interface IHazMacCatalystBuild :
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     //.AddProperty(BuildProps.iOS.MtouchLink, Linker)
                     .SetProcessExecutionTimeout(CompileTimeout)
-                    .SetOutput(ArtifactsDirectory));
+                    .SetOutput(outputDirectory));
+
+            Assert.NotEmpty(outputDirectory.GlobFiles("*.pkg"), "Could not locate a Pkg file in the publish directory");
         });
 }

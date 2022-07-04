@@ -72,11 +72,42 @@ jobs:
           AppleIssuerId: ${{ secrets.APPLE_ISSUER_ID }}
           AppleKeyId: ${{ secrets.APPLE_KEY_ID }}
           AppleAuthKeyP8: ${{ secrets.APPLE_AUTH_KEY_P8 }}
-          AppleProfileId: ${{ secrets.APPLE_PROFILE_ID }}
+          AppleProfileId: ${{ secrets.IOS_PROVISIONING_PROFILE }}
       - uses: actions/upload-artifact@v1
         with:
           name: ios-build
           path: artifacts/ios-build
+  maccatalyst-build:
+    name: maccatalyst-build
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 'Setup .NET 6.0.x'
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+      - name: Cache .nuke/temp, ~/.nuget/packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
+      - name: Run './build.sh CompileMacCatalyst'
+        run: ./build.sh CompileMacCatalyst
+        env:
+          P12B64: ${{ secrets.P12B64 }}
+          P12Password: ${{ secrets.P12PASSWORD }}
+          AppleIssuerId: ${{ secrets.APPLE_ISSUER_ID }}
+          AppleKeyId: ${{ secrets.APPLE_KEY_ID }}
+          AppleAuthKeyP8: ${{ secrets.APPLE_AUTH_KEY_P8 }}
+          AppleProfileId: ${{ secrets.MACCATALYST_PROVISIONING_PROFILE }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: maccatalyst-build
+          path: artifacts/maccatalyst-build
   windows-build:
     name: windows-build
     runs-on: windows-latest

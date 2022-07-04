@@ -11,12 +11,12 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
     FetchDepth = 0,
     AutoGenerate = true,
     OnPushBranches = new[] { MasterBranch },
-    JobNames = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild, PublishInternal } )]
+    JobNames = new[] { LibraryBuild, AndroidBuild, IOSBuild, MacCatalystBuild, WinUIBuild, PublishInternal } )]
 [GitHubWorkflow("pr",
     OnPullRequestBranches = new[] { MasterBranch },
     FetchDepth = 0,
     AutoGenerate = true,
-    JobNames = new[] { LibraryBuild, AndroidBuild, IOSBuild, WinUIBuild } )]
+    JobNames = new[] { AndroidBuild, IOSBuild, MacCatalystBuild, WinUIBuild } )]
 [WorkflowJob(
     Name = AndroidBuild,
     //ArtifactName = "android",
@@ -40,7 +40,20 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
          nameof(IRestoreAppleProvisioningProfile.AppleIssuerId),
          nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
          nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
-         nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
+         $"{nameof(IRestoreAppleProvisioningProfile.AppleProfileId)}=IOS_PROVISIONING_PROFILE"
+    })]
+[WorkflowJob(
+    Name = MacCatalystBuild,
+    Image = HostedAgent.Mac,
+    InvokedTargets = new[] { nameof(IHazMacCatalystBuild.CompileMacCatalyst) },
+    ImportSecrets = new[]
+    {
+        nameof(IHazAppleCertificate.P12B64),
+        nameof(IHazAppleCertificate.P12Password),
+        nameof(IRestoreAppleProvisioningProfile.AppleIssuerId),
+        nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
+        nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
+        $"{nameof(IRestoreAppleProvisioningProfile.AppleProfileId)}=MACCATALYST_PROVISIONING_PROFILE"
     })]
 [WorkflowJob(
     Name = WinUIBuild,

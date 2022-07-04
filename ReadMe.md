@@ -7,7 +7,7 @@ The AvantiPoint Nuke Maui library is an extension library for [Nuke Build](https
 | Android | Supported |
 | iOS | In Progress |
 | macOS | In Progress |
-| Windows | Planned |
+| Windows | In Progress |
 | Tizen | Planned |
 
 ## Application Versioning
@@ -73,7 +73,7 @@ The AvantiPoint.Nuke.Maui library includes some custom attributes that can be us
 [WorkflowJob(
     Name = "android-build",
     //ArtifactName = "android",
-    Image = GitHubActionsImage.WindowsLatest,
+    Image = HostedAgent.Windows,
     InvokedTargets = new[] { nameof(IHazAndroidBuild.CompileAndroid) },
     ImportSecrets = new[]
     {
@@ -85,7 +85,7 @@ The AvantiPoint.Nuke.Maui library includes some custom attributes that can be us
 [WorkflowJob(
     Name = "ios-build",
     //ArtifactName = "ios",
-    Image = GitHubActionsImage.MacOsLatest,
+    Image = HostedAgent.Mac,
     InvokedTargets = new[] { nameof(IHazIOSBuild.CompileIos) },
     ImportSecrets = new[]
     {
@@ -94,7 +94,7 @@ The AvantiPoint.Nuke.Maui library includes some custom attributes that can be us
          nameof(IRestoreAppleProvisioningProfile.AppleIssuerId),
          nameof(IRestoreAppleProvisioningProfile.AppleKeyId),
          nameof(IRestoreAppleProvisioningProfile.AppleAuthKeyP8),
-         nameof(IRestoreAppleProvisioningProfile.AppleProfileId)
+         $"{nameof(IRestoreAppleProvisioningProfile.AppleProfileId)}=IOS_PROVISIONING_PROFILE_ID"
     })]
 public class Build : MauiBuild
 {
