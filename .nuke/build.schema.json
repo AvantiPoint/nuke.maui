@@ -41,6 +41,31 @@
           "description": "Apple Profile Id is required",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
+        "AzureKeyVault": {
+          "type": "string",
+          "description": "The Azure KeyVault Uri",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "AzureKeyVaultCertificate": {
+          "type": "string",
+          "description": "The name of the Code Sign certificate in the Azure Key Vault",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "AzureKeyVaultClientId": {
+          "type": "string",
+          "description": "The Azure AD Client Id to connect to the Azure Key Vault",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "AzureKeyVaultClientSecret": {
+          "type": "string",
+          "description": "The Azure AD Client Secret to connect to the Azure Key Vault",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "AzureKeyVaultTenantId": {
+          "type": "string",
+          "description": "The Azure AD Tenant Id",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "CodeSignCertificate": {
           "type": "string",
           "description": "The name of the Code Sign certificate in the Azure Key Vault",
@@ -76,6 +101,16 @@
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
+        },
+        "DigestAlgorithm": {
+          "type": "string",
+          "description": "The Signing Algorithm, i.e. sha1, sha256, sha384, sha512. Defaults to sha256",
+          "enum": [
+            "SHA1",
+            "SHA256",
+            "SHA384",
+            "SHA512"
+          ]
         },
         "Help": {
           "type": "boolean",
@@ -136,6 +171,16 @@
           "type": "string",
           "description": "Partition to use on CI"
         },
+        "PfxB64": {
+          "type": "string",
+          "description": "Base 64 Encoded PFX for code signing the Windows MSIX",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "PfxPassword": {
+          "type": "string",
+          "description": "The password for the Windows signing Certificate",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "Plan": {
           "type": "boolean",
           "description": "Shows the execution plan (HTML)"
@@ -163,6 +208,7 @@
             "enum": [
               "CleanArtifacts",
               "CodeSign",
+              "CodeSignMsix",
               "CompileAndroid",
               "CompileIos",
               "CompileLib",
@@ -190,6 +236,7 @@
             "enum": [
               "CleanArtifacts",
               "CodeSign",
+              "CodeSignMsix",
               "CompileAndroid",
               "CompileIos",
               "CompileLib",

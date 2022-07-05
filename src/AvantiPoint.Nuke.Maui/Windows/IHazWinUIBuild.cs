@@ -2,8 +2,8 @@ using AvantiPoint.Nuke.Maui.Extensions;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
-using Nuke.Components;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Components;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -17,12 +17,14 @@ public interface IHazWinUIBuild :
     IDotNetRestore,
     IHazMauiWorkload,
     IHazMauiAppVersion,
+    IWinUICodeSign,
     IHazTimeout
 {
     Target CompileWindows => _ => _
         .OnlyOnWindowsHost()
         .DependsOn<IHazMauiWorkload>()
         .DependsOn<IDotNetRestore>()
+        .TryTriggers<IWinUICodeSign>()
         .Produces(ArtifactsDirectory / "windows-build" / "*.msix")
         .Executes(() =>
         {

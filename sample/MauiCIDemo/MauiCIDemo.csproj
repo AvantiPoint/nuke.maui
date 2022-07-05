@@ -30,12 +30,11 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-ios' AND '$(Configuration)' == 'Release'">
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios')) AND '$(Configuration)' == 'Release'">
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst' AND '$(Configuration)' == 'Release'">
-    <!-- for Mac Catalyst -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-maccatalyst')) AND '$(Configuration)' == 'Release'">
     <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 

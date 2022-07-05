@@ -13,4 +13,5 @@
 
 *.csproj.user
 
+*.binlog
 Artifacts/

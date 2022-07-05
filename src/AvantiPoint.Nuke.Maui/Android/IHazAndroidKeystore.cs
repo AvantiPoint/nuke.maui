@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.IO;
@@ -19,7 +19,7 @@ public interface IHazAndroidKeystore : INukeBuild
     [Parameter("Android KeyStore must be provided"), Secret]
     string AndroidKeystorePassword => TryGetValue(() => AndroidKeystorePassword);
 
-    AbsolutePath KeystorePath => (AbsolutePath)Path.Combine(TemporaryDirectory, $"{AndroidKeystoreName}.keystore");
+    AbsolutePath KeystorePath => TemporaryDirectory / (string.IsNullOrEmpty(AndroidKeystoreName) ? Guid.NewGuid().ToString() : $"{AndroidKeystoreName}.keystore");
 
     Target RestoreKeystore => _ => _
         .TryBefore<IDotNetRestore>()
