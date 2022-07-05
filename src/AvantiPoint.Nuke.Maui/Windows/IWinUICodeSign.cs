@@ -30,7 +30,8 @@ public interface IWinUICodeSign : IHazArtifacts, IHazAzureKeyVaultCertificate
             var msixFiles = ArtifactsDirectory.GlobFiles("**/*.msix");
             Assert.NotEmpty(msixFiles, "No MSIX files could be located.");
 
-            if (!this.LocalCodeSign(msixFiles.Cast<string>()) && !this.AzureKeyVaultSign(msixFiles.Cast<string>()))
+            var filePaths = msixFiles.Select(x => (string)x);
+            if (!this.LocalCodeSign(filePaths) && !this.AzureKeyVaultSign(filePaths))
             {
                 Log.Warning("The MSIX was not signed.");
             }
