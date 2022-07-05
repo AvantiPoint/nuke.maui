@@ -4,3 +4,4 @@
 *.props		text eol=lf
 *.targets	text eol=lf
 *.md		text eol=lf
+*.yml		text eol=lf

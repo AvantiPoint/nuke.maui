@@ -58,7 +58,15 @@ using Nuke.Common.Tools.NerdbankGitVersioning;
 [WorkflowJob(
     Name = WinUIBuild,
     Image = HostedAgent.Windows,
-    InvokedTargets = new[] { nameof(IHazWinUIBuild.CompileWindows) })]
+    InvokedTargets = new[] { nameof(IHazWinUIBuild.CompileWindows) },
+    ImportSecrets = new[]
+    {
+        $"{nameof(IWinUICodeSign.AzureKeyVault)}=CODESIGNKEYVAULT",
+        $"{nameof(IWinUICodeSign.AzureKeyVaultCertificate)}=CODESIGNCERTIFICATE",
+        $"{nameof(IWinUICodeSign.AzureKeyVaultClientId)}=CODESIGNCLIENTID",
+        $"{nameof(IWinUICodeSign.AzureKeyVaultClientSecret)}=CODESIGNCLIENTSECRET",
+        $"{nameof(IWinUICodeSign.AzureKeyVaultTenantId)}=CODESIGNTENANTID"
+    })]
 [WorkflowJob(
     Name = LibraryBuild,
     ArtifactName = "nuget",
