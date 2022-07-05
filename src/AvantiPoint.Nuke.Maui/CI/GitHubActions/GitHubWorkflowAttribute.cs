@@ -11,7 +11,7 @@ using Nuke.Common.IO;
 using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 
-namespace AvantiPoint.Nuke.Maui.CI;
+namespace AvantiPoint.Nuke.Maui.CI.GitHubActions;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
@@ -27,13 +27,12 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
     }
 
     public override string IdPostfix => _name;
-    public override Type HostType => typeof(GitHubActions);
+    public override Type HostType => typeof(global::Nuke.Common.CI.GitHubActions.GitHubActions);
     public override string ConfigurationFile => NukeBuild.RootDirectory / ".github" / "workflows" / $"{_name}.yml";
     public override IEnumerable<string> GeneratedFiles => new[] { ConfigurationFile };
 
-    public override IEnumerable<string> RelevantTargetNames => Jobs.SelectMany(x => x.InvokedTargets).Distinct();
+    public override IEnumerable<string> RelevantTargetNames => Array.Empty<string>();
     public override IEnumerable<string> IrrelevantTargetNames => Array.Empty<string>();
-    public IEnumerable<WorkflowJobAttribute> Jobs => BuildType.GetCustomAttributes<WorkflowJobAttribute>();
 
     public string[] JobNames { get; set; } = Array.Empty<string>();
     public GitHubActionsTrigger[] On { get; set; } = Array.Empty<GitHubActionsTrigger>();
@@ -49,7 +48,7 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
     public string[] OnPullRequestExcludePaths { get; set; } = Array.Empty<string>();
     public string[] OnWorkflowDispatchOptionalInputs { get; set; } = Array.Empty<string>();
     public string[] OnWorkflowDispatchRequiredInputs { get; set; } = Array.Empty<string>();
-    public string OnCronSchedule { get; set; } = "";
+    public string? OnCronSchedule { get; set; }
     public bool EnableGitHubToken { get; set; }
 
     public Type BuildType { get; set; } = typeof(NukeBuild);
@@ -123,7 +122,7 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
 
         if (job.DownloadArtifacts.Any())
         {
-            foreach(var artifact in job.DownloadArtifacts)
+            foreach (var artifact in job.DownloadArtifacts)
             {
                 yield return new GitHubActionsDownloadArtifactStep
                 {

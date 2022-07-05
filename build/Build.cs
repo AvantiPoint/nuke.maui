@@ -3,6 +3,7 @@ using AvantiPoint.Nuke.Maui;
 using AvantiPoint.Nuke.Maui.Android;
 using AvantiPoint.Nuke.Maui.Apple;
 using AvantiPoint.Nuke.Maui.CI;
+using AvantiPoint.Nuke.Maui.CI.GitHubActions;
 using AvantiPoint.Nuke.Maui.Windows;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Tools.NerdbankGitVersioning;
