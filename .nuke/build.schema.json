@@ -145,6 +145,9 @@
           "type": "string",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
+        "InputFilePath": {
+          "type": "string"
+        },
         "Linker": {
           "type": "string",
           "enum": [
@@ -215,6 +218,7 @@
               "CompileMacCatalyst",
               "CompileWindows",
               "DownloadProvisioningProfile",
+              "EncodeFile",
               "GenerateJwt",
               "InstallWorkload",
               "PublishNuGet",
@@ -243,6 +247,7 @@
               "CompileMacCatalyst",
               "CompileWindows",
               "DownloadProvisioningProfile",
+              "EncodeFile",
               "GenerateJwt",
               "InstallWorkload",
               "PublishNuGet",

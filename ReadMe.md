@@ -58,6 +58,26 @@ To test this locally you will likely need to set at least a few of the secrets. 
 
 > **NOTE** For Windows Builds you can optionally supply parameters to sign the MSIX using Azure KeyVault. If you use the Azure KeyVault be sure to run `nuke :add-package AzureSignTool` this will ensure that the CLI Tool is available for Nuke to use.
 
+#### Converting files to Base64
+
+In order to convert files such as your Keystore, or other code signing certificates to a base 64 string you will need to open a terminal. From PowerShell you can run:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes(".\Path\WindowsCert.pfx"))
+```
+
+From the Mac Terminal you can simply run:
+
+```bash
+base64 -i your_file_path
+```
+
+Alternatively you can invoke the EncodeFile target in the MauiBuild. This is provided to make it easy out of the box to get the base64 encoded certificates when setting up your pipelines/workflows.
+
+```bash
+nuke EncodeFile --input-file-path your_file_path
+```
+
 ### Running the Build
 
 The Build can easily be run by running the `nuke` command along with the desired build target.

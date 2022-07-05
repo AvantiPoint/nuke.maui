@@ -24,5 +24,5 @@ internal struct WorkflowSecret
     public string Secret { get; }
 
     public static implicit operator WorkflowSecret(string secret) =>
-        new WorkflowSecret(secret);
+        new(secret);
 }

@@ -11,7 +11,8 @@ public abstract class MauiBuild : NukeBuild,
     IHazAndroidBuild,
     IHazIOSBuild,
     IHazMacCatalystBuild,
-    IHazWinUIBuild
+    IHazWinUIBuild,
+    IEncodeFile
 {
     public abstract string ApplicationDisplayVersion { get; }
     public abstract long ApplicationVersion { get; }
