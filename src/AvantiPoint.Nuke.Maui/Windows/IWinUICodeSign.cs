@@ -27,7 +27,9 @@ public interface IWinUICodeSign : IHazArtifacts, IHazAzureKeyVaultCertificate
         .Unlisted()
         .Executes(() =>
         {
-            var msixFiles = ArtifactsDirectory.GlobFiles("**/*.msix");
+            var artifacts = ArtifactsDirectory / "windows-build" / "AppPackages";
+
+            var msixFiles = artifacts.GlobFiles("*/*.msix");
             Assert.NotEmpty(msixFiles, "No MSIX files could be located.");
 
             var filePaths = msixFiles.Select(x => (string)x);
