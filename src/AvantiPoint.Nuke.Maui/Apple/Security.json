@@ -8,13 +8,45 @@
       "help": "Uses the <c>security</c> tool to create a new keychain.",
       "postfix": "CreateKeychain",
       "definiteArgument": "create-keychain",
-      "settingsClass": {}
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "Password",
+            "type": "string",
+            "format": "-p {value}",
+            "secret": true,
+            "help": "Use \"password\" as the password for the keychains being created"
+          },
+          {
+            "name": "Keychain",
+            "type": "string",
+            "format": "{value}",
+            "help": "Keychain Path"
+          }
+        ]
+      }
     },
     {
       "help": "Uses the <c>security</c> tool to unlock the keychain",
       "postfix": "UnlockKeychain",
       "definiteArgument": "unlock-keychain",
-      "settingsClass": {}
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "Password",
+            "type": "string",
+            "format": "-p {value}",
+            "secret": true,
+            "help": "Use \"password\" as the password to unlock the keychain"
+          },
+          {
+            "name": "Keychain",
+            "type": "string",
+            "format": "{value}",
+            "help": "Keychain Path"
+          }
+        ]
+      }
     },
     {
       "help": "Uses the <c>security</c> tool to import a p12 certificate",
@@ -30,35 +62,65 @@
             "help": "The path to the certificate to import"
           },
           {
-            "name": "KeychainPath",
-            "type": "string",
-            "format": "-k {value}",
-            "help": "The path to the keychain to import the certificate into"
-          },
-          {
             "name": "Password",
             "type": "string",
             "format": "-P {value}",
             "secret": true,
             "help": "The p12 certificate password"
+          },
+          {
+            "name": "AllowAny",
+            "type": "bool",
+            "format": "-A",
+            "help": "Allow any application to access the imported key without warning (insecure, not recommended!)"
+          },
+          {
+            "name": "Type",
+            "type": "AppleCertificateType",
+            "format": "-t {value}",
+            "help": "Type = pub|priv|session|cert|agg"
+          },
+          {
+            "name": "Format",
+            "type": "AppleCertificateFormat",
+            "format": "-f {value}",
+            "help": "Format = openssl|openssh1|openssh2|bsafe|raw|pkcs7|pkcs8|pkcs12|netscape|pemseq"
+          },
+          {
+            "name": "KeychainPath",
+            "type": "string",
+            "format": "-k {value}",
+            "help": "The path to the keychain to import the certificate into"
           }
         ]
       }
     }
   ],
-  "commonTaskProperties": [
+  "enumerations": [
     {
-      "name": "Password",
-      "type": "string",
-      "format": "-p {value}",
-      "secret": true,
-      "help": "Sets the Password for the Keychain"
+      "name": "AppleCertificateType",
+      "values": [
+        "pub",
+        "priv",
+        "session",
+        "cert",
+        "agg"
+      ]
     },
     {
-      "name": "Keychain",
-      "type": "string",
-      "format": "{value}",
-      "help": "Keychain Path"
+      "name": "AppleCertificateFormat",
+      "values": [
+        "openssl",
+        "openssh",
+        "openssh2",
+        "bsafe",
+        "raw",
+        "pkcs7",
+        "pkcs8",
+        "pkcs12",
+        "netscape",
+        "pemseq"
+      ]
     }
   ]
 }

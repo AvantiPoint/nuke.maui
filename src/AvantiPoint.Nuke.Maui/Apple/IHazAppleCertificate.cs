@@ -54,8 +54,11 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
 
                 SecurityImport(_ => _
                     .SetCertificatePath(P12CertifiatePath)
-                    .SetKeychainPath(KeychainPath)
-                    .SetPassword(P12Password));
+                    .SetPassword(P12Password)
+                    .EnableAllowAny()
+                    .SetType(AppleCertificateType.cert)
+                    .SetFormat(AppleCertificateFormat.pkcs12)
+                    .SetKeychainPath(KeychainPath));
 
                 Security($"list-keychain -d user -s {KeychainPath}");
             }

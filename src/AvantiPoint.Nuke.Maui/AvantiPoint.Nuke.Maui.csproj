@@ -14,8 +14,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!--<NukeSpecificationFiles Include="**\Security.json" />-->
-  </ItemGroup>
+  <!-- <ItemGroup>
+    <NukeSpecificationFiles Include="**\Security.json" />
+  </ItemGroup> -->
 
 </Project>
