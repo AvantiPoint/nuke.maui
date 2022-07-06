@@ -1,4 +1,5 @@
 ﻿using Nuke.Common;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.AzureSignTool;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.SignTool;
@@ -53,6 +54,10 @@ internal static class WinUIAppSigning
                 .SetKeyVaultTenantId(codeSign.AzureKeyVaultTenantId)
                 .SetKeyVaultCertificateName(codeSign.AzureKeyVaultCertificate)
                 .SetFileDigest(codeSign.DigestAlgorithm)
+                .SetTimestampRfc3161Url("http://timestamp.digicert.com")
+                .SetTimestampDigest(codeSign.DigestAlgorithm)
+                .When(codeSign.Verbosity == Verbosity.Verbose, _ => _
+                    .EnableVerbose())
                 .AddFiles(files));
 
         return true;
