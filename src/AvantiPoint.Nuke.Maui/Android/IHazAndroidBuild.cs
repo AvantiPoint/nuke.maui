@@ -59,7 +59,7 @@ public interface IHazAndroidBuild :
                     .SetDeterministic(!IsLocalBuild)
                     .SetOutput(outputDirectory)
                     .When(IsLocalBuild, _ => _
-                        .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
+                        .SetProcessArgumentConfigurator(_ => _.Add($"/bl:{outputDirectory / "android.binlog"}"))));
 
             Assert.NotEmpty(outputDirectory.GlobFiles("*-Signed.apk", "*-Signed.aab"), "No Signed APK or AAB files could be found");
             outputDirectory.GlobFiles("*")
