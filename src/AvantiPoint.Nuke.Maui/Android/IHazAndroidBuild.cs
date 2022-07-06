@@ -66,6 +66,8 @@ public interface IHazAndroidBuild :
                 .Where(x => !x.Name.Contains("-Signed"))
                 .ForEach(x =>
                 {
+                    if (Path.GetExtension(x) == ".binlog")
+                        return;
                     if (!x.NameWithoutExtension.EndsWith("-Signed"))
                         File.Delete(x);
                     else
