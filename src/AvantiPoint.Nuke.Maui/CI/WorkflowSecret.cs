@@ -19,6 +19,12 @@ internal struct WorkflowSecret
         }
     }
 
+    public WorkflowSecret(string name, string secret)
+    {
+        Name = name;
+        Secret = secret;
+    }
+
     public string Name { get; }
 
     public string Secret { get; }

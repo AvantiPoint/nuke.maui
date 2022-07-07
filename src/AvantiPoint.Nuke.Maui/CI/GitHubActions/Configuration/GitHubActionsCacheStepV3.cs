@@ -6,7 +6,7 @@ namespace AvantiPoint.Nuke.Maui.CI.Configuration;
 
 internal class GitHubActionsCacheStepV3 : GitHubActionsCacheStep
 {
-    public string JobName { get; set; } = "";
+    public string JobName { get; set; } = default!;
 
     public override void Write(CustomFileWriter writer)
     {

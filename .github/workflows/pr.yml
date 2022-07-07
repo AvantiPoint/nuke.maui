@@ -23,11 +23,12 @@ on:
 
 jobs:
   android-build:
-    name: android-build
+    name: Android Build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Cache ~/.nuget/packages
         uses: actions/cache@v2
@@ -47,11 +48,12 @@ jobs:
           name: android-build
           path: artifacts/android-build
   ios-build:
-    name: ios-build
+    name: iOS Build
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: 'Setup .NET 6.0.x'
         uses: actions/setup-dotnet@v2
@@ -78,11 +80,12 @@ jobs:
           name: ios-build
           path: artifacts/ios-build
   maccatalyst-build:
-    name: maccatalyst-build
+    name: MacCatalyst Build
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: 'Setup .NET 6.0.x'
         uses: actions/setup-dotnet@v2
@@ -109,11 +112,12 @@ jobs:
           name: maccatalyst-build
           path: artifacts/maccatalyst-build
   windows-build:
-    name: windows-build
+    name: Windows Build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Cache ~/.nuget/packages
         uses: actions/cache@v2

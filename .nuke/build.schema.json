@@ -66,31 +66,6 @@
           "description": "The Azure AD Tenant Id",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
-        "CodeSignCertificate": {
-          "type": "string",
-          "description": "The name of the Code Sign certificate in the Azure Key Vault",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
-        "CodeSignClientId": {
-          "type": "string",
-          "description": "The Azure AD Client Id to connect to the Azure Key Vault",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
-        "CodeSignClientSecret": {
-          "type": "string",
-          "description": "The Azure AD Client Secret to connect to the Azure Key Vault",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
-        "CodeSignKeyVault": {
-          "type": "string",
-          "description": "The Azure KeyVault Uri",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
-        "CodeSignTenantId": {
-          "type": "string",
-          "description": "The Azure AD Tenant Id",
-          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
-        },
         "Configuration": {
           "type": "string",
           "enum": [

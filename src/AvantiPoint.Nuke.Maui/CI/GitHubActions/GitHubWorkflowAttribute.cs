@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using System.Xml.Linq;
-using AvantiPoint.Nuke.Maui.CI.Configuration;
+﻿using AvantiPoint.Nuke.Maui.CI.Configuration;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.CI;
@@ -15,109 +13,109 @@ namespace AvantiPoint.Nuke.Maui.CI.GitHubActions;
 
 [PublicAPI]
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class GitHubWorkflowAttribute : ConfigurationAttributeBase
+public class GitHubWorkflowAttribute : CIBuildAttribute
 {
-    private readonly string _name;
-    private GitHubActionsSubmodules? _submodules;
-    private uint? _fetchDepth;
-
-    public GitHubWorkflowAttribute(string name)
+    public GitHubWorkflowAttribute(Type type)
+        : base(type)
     {
-        _name = name.Replace(oldChar: ' ', newChar: '_');
     }
 
-    public override string IdPostfix => _name;
     public override Type HostType => typeof(global::Nuke.Common.CI.GitHubActions.GitHubActions);
     public override string ConfigurationFile => NukeBuild.RootDirectory / ".github" / "workflows" / $"{_name}.yml";
     public override IEnumerable<string> GeneratedFiles => new[] { ConfigurationFile };
 
-    public override IEnumerable<string> RelevantTargetNames => Array.Empty<string>();
-    public override IEnumerable<string> IrrelevantTargetNames => Array.Empty<string>();
-
-    public string[] JobNames { get; set; } = Array.Empty<string>();
-    public GitHubActionsTrigger[] On { get; set; } = Array.Empty<GitHubActionsTrigger>();
-    public string[] OnPushBranches { get; set; } = Array.Empty<string>();
-    public string[] OnPushBranchesIgnore { get; set; } = Array.Empty<string>();
-    public string[] OnPushTags { get; set; } = Array.Empty<string>();
-    public string[] OnPushTagsIgnore { get; set; } = Array.Empty<string>();
-    public string[] OnPushIncludePaths { get; set; } = Array.Empty<string>();
-    public string[] OnPushExcludePaths { get; set; } = Array.Empty<string>();
-    public string[] OnPullRequestBranches { get; set; } = Array.Empty<string>();
-    public string[] OnPullRequestTags { get; set; } = Array.Empty<string>();
-    public string[] OnPullRequestIncludePaths { get; set; } = Array.Empty<string>();
-    public string[] OnPullRequestExcludePaths { get; set; } = Array.Empty<string>();
-    public string[] OnWorkflowDispatchOptionalInputs { get; set; } = Array.Empty<string>();
-    public string[] OnWorkflowDispatchRequiredInputs { get; set; } = Array.Empty<string>();
-    public string? OnCronSchedule { get; set; }
-    public bool EnableGitHubToken { get; set; }
-
-    public Type BuildType { get; set; } = typeof(NukeBuild);
-
-    public GitHubActionsSubmodules Submodules
-    {
-        set => _submodules = value;
-        get => throw new NotSupportedException();
-    }
-
-    public uint FetchDepth
-    {
-        set => _fetchDepth = value;
-        get => throw new NotSupportedException();
-    }
-
-
-    public override CustomFileWriter CreateWriter(StreamWriter streamWriter)
-    {
-        return new CustomFileWriter(streamWriter, indentationFactor: 2, commentPrefix: "#");
-    }
-
-    public override ConfigurationEntity GetConfiguration(NukeBuild build, IReadOnlyCollection<ExecutableTarget> relevantTargets)
+    protected override ConfigurationEntity BuildConfiguration(NukeBuild build, IEnumerable<ExecutableTarget> relevantTargets)
     {
         var configuration = new GitHubActionsConfiguration
         {
             Name = _name,
-            ShortTriggers = On,
+            ShortTriggers = Array.Empty<GitHubActionsTrigger>(),
             DetailedTriggers = GetTriggers().ToArray(),
-            Jobs = GetJobs(build).ToArray()
+            Jobs = GetJobs(relevantTargets).ToArray()
         };
-
-        Assert.True(configuration.ShortTriggers.Length == 0 || configuration.DetailedTriggers.Length == 0,
-            $"Workflows can only define either shorthand '{nameof(On)}' or '{nameof(On)}*' triggers");
-        Assert.True(configuration.ShortTriggers.Length > 0 || configuration.DetailedTriggers.Length > 0,
-            $"Workflows must define either shorthand '{nameof(On)}' or '{nameof(On)}*' triggers");
 
         return configuration;
     }
 
-    private IEnumerable<GitHubActionsJob> GetJobs(NukeBuild build)
+    private IEnumerable<GitHubActionsDetailedTrigger> GetTriggers()
     {
-        var jobs = build.GetType().GetCustomAttributes<WorkflowJobAttribute>().ToArray();
-        if (jobs.Length == 1 && string.IsNullOrEmpty(jobs[0].Name))
-            jobs[0].Name = _name;
-        else if (jobs.Length > 1 && jobs.Any(j => string.IsNullOrEmpty(j.Name)))
-            throw new ArgumentNullException("The Job Name can not be null or empty");
-
-        foreach (var jobDef in jobs)
+        if (Build.OnPush is not null && Build.OnPush.Branches.Any())
         {
-            if (!JobNames.Contains(jobDef.Name))
-                continue;
-
-            yield return new GitHubWorkflowJob
+            yield return new GitHubActionsVcsTrigger
             {
-                Agent = jobDef.Image,
-                Name = jobDef.Name,
-                Needs = jobDef.Needs,
-                Steps = GetSteps(jobDef, build.ExecutableTargets()).ToArray()
+                Kind = GitHubActionsTrigger.Push,
+                Branches = Build.OnPush.Branches.ToArray(),
+                BranchesIgnore = Build.OnPush.BranchesIgnore.ToArray(),
+                Tags = Build.OnPush.Tags.ToArray(),
+                TagsIgnore = Build.OnPush.TagsIgnore.ToArray(),
+                IncludePaths = Build.OnPush.IncludePaths.ToArray(),
+                ExcludePaths = Build.OnPush.ExcludePaths.ToArray()
             };
+        }
+
+        if (Build.OnPull is not null && Build.OnPull.Branches.Any())
+        {
+            yield return new GitHubActionsVcsTrigger
+            {
+                Kind = GitHubActionsTrigger.PullRequest,
+                Branches = Build.OnPull.Branches.ToArray(),
+                BranchesIgnore = Array.Empty<string>(),
+                Tags = Array.Empty<string>(),
+                TagsIgnore = Array.Empty<string>(),
+                IncludePaths = Build.OnPull.IncludePaths.ToArray(),
+                ExcludePaths = Build.OnPull.ExcludePaths.ToArray()
+            };
+        }
+
+        if (Build.ManualTrigger is not null)
+        {
+            yield return new GitHubActionsWorkflowDispatchTrigger
+            {
+                OptionalInputs = Build.ManualTrigger.OptionalInputs.ToArray(),
+                RequiredInputs = Build.ManualTrigger.RequiredInputs.ToArray()
+            };
+        }
+
+        if (!string.IsNullOrEmpty(Build.OnCronSchedule))
+        {
+            yield return new GitHubActionsScheduledTrigger { Cron = Build.OnCronSchedule };
         }
     }
 
-    private IEnumerable<GitHubActionsStep> GetSteps(WorkflowJobAttribute job, IEnumerable<ExecutableTarget> targets)
+    private IEnumerable<GitHubActionsJob> GetJobs(IEnumerable<ExecutableTarget> relevantTargets)
+    {
+        var previousStage = Array.Empty<string>();
+        foreach(var stage in Build.Stages)
+        {
+            foreach(var job in stage.Jobs)
+            {
+                var needs = new List<string>(previousStage);
+                if(job.Needs.Any())
+                    needs.AddRange(job.Needs);
+
+                yield return new GitHubWorkflowJob
+                {
+                    Job = job,
+                    Needs = needs.ToArray(),
+                    Steps = GetSteps(job, relevantTargets).ToArray()
+                };
+            }
+
+            previousStage = stage.Jobs.Select(x => x.JobName()).ToArray();
+        }
+    }
+
+    private IEnumerable<GitHubActionsStep> GetSteps(ICIJob job, IEnumerable<ExecutableTarget> relevantTargets)
     {
         yield return new GitHubActionsCheckoutStep
         {
-            Submodules = _submodules,
-            FetchDepth = _fetchDepth
+            Submodules = Build.Submodules switch
+            {
+                CheckoutSubmodules.Recursive => GitHubActionsSubmodules.Recursive,
+                CheckoutSubmodules.True => GitHubActionsSubmodules.True,
+                _ => GitHubActionsSubmodules.False
+            },
+            FetchDepth = (uint)Build.FetchDepth
         };
 
         if (job.DownloadArtifacts.Any())
@@ -131,44 +129,31 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
             }
         }
 
-        if (job.Image == HostedAgent.Mac && !job.DotNetSdks.Any())
-            job.DotNetSdks = new[] { "6.0.x" };
-
         yield return new GitHubActionsUseDotNetVersionStep
         {
-            Sdks = job.DotNetSdks
+            Sdks = job.DotNetSdks.ToArray()
         };
 
         if (job.CacheKeyFiles.Any())
         {
             yield return new GitHubActionsCacheStepV3
             {
-                JobName = job.Name,
-                IncludePatterns = job.CacheIncludePatterns,
-                ExcludePatterns = job.CacheExcludePatterns,
-                KeyFiles = job.CacheKeyFiles
+                JobName = job.JobName(),
+                IncludePatterns = job.CacheIncludePatterns.ToArray(),
+                ExcludePatterns = job.CacheExcludePatterns.ToArray(),
+                KeyFiles = job.CacheKeyFiles.ToArray()
             };
         }
 
-        var cmdPath = BuildCmdPath;
-        if (!job.Image.ToString().StartsWith("Windows"))
-            cmdPath = cmdPath.Replace(".cmd", ".sh");
-
         yield return new GitHubActionsRunStep
         {
-            Command = $"./{cmdPath} {job.InvokedTargets.JoinSpace()}",
+            Command = job.GetRunCommand(BuildCmdPath),
             Imports = GetImports(job).ToDictionary(x => x.Key, x => x.Value)
         };
 
         if (job.PublishArtifacts)
         {
-            var artifacts = targets
-                .Where(x => job.InvokedTargets.Any(name => name == x.Name))
-                .SelectMany(x => x.ArtifactProducts)
-                .Select(x => (AbsolutePath)x)
-                // TODO: https://github.com/actions/upload-artifact/issues/11
-                .Select(x => x.DescendantsAndSelf(y => y.Parent).FirstOrDefault(y => !y.ToString().ContainsOrdinalIgnoreCase("*")))
-                .Distinct().ToList();
+            var artifacts = job.GetArtifacts(relevantTargets).ToList();
 
             if (artifacts.Count == 1)
             {
@@ -197,75 +182,20 @@ public class GitHubWorkflowAttribute : ConfigurationAttributeBase
         }
     }
 
-    protected virtual IEnumerable<(string Key, string Value)> GetImports(WorkflowJobAttribute job)
+    protected virtual IEnumerable<(string Key, string Value)> GetImports(ICIJob job)
     {
-        foreach (var input in OnWorkflowDispatchOptionalInputs.Concat(OnWorkflowDispatchRequiredInputs))
-            yield return (input, $"${{{{ github.event.inputs.{input} }}}}");
+        if(Build.ManualTrigger is not null)
+        {
+            foreach (var input in Build.ManualTrigger.OptionalInputs.Concat(Build.ManualTrigger.RequiredInputs))
+                yield return (input, $"${{{{ github.event.inputs.{input} }}}}");
+        }
 
         static string GetSecretValue(string value) => $"${{{{ secrets.{value} }}}}";
 
-        foreach (WorkflowSecret secret in job.ImportSecrets)
+        foreach (var secret in job.ImportSecrets.OfType<WorkflowSecret>())
             yield return (secret.Name, GetSecretValue(secret.Secret));
 
-        if (EnableGitHubToken)
+        if (Build.EnableToken)
             yield return ("GITHUB_TOKEN", GetSecretValue("GITHUB_TOKEN"));
-    }
-
-    protected virtual IEnumerable<GitHubActionsDetailedTrigger> GetTriggers()
-    {
-        if (OnPushBranches.Length > 0 ||
-            OnPushBranchesIgnore.Length > 0 ||
-            OnPushTags.Length > 0 ||
-            OnPushTagsIgnore.Length > 0 ||
-            OnPushIncludePaths.Length > 0 ||
-            OnPushExcludePaths.Length > 0)
-        {
-            Assert.True(
-                OnPushBranches.Length == 0 && OnPushTags.Length == 0 || OnPushBranchesIgnore.Length == 0 && OnPushTagsIgnore.Length == 0,
-                $"Cannot use {nameof(OnPushBranches)}/{nameof(OnPushTags)} and {nameof(OnPushBranchesIgnore)}/{nameof(OnPushTagsIgnore)} in combination");
-
-            yield return new GitHubActionsVcsTrigger
-            {
-                Kind = GitHubActionsTrigger.Push,
-                Branches = OnPushBranches,
-                BranchesIgnore = OnPushBranchesIgnore,
-                Tags = OnPushTags,
-                TagsIgnore = OnPushTagsIgnore,
-                IncludePaths = OnPushIncludePaths,
-                ExcludePaths = OnPushExcludePaths
-            };
-        }
-
-        if (OnPullRequestBranches.Length > 0 ||
-            OnPullRequestTags.Length > 0 ||
-            OnPullRequestIncludePaths.Length > 0 ||
-            OnPullRequestExcludePaths.Length > 0)
-        {
-            yield return new GitHubActionsVcsTrigger
-            {
-                Kind = GitHubActionsTrigger.PullRequest,
-                Branches = OnPullRequestBranches,
-                BranchesIgnore = new string[0],
-                Tags = OnPullRequestTags,
-                TagsIgnore = new string[0],
-                IncludePaths = OnPullRequestIncludePaths,
-                ExcludePaths = OnPullRequestExcludePaths
-            };
-        }
-
-        if (OnWorkflowDispatchOptionalInputs.Length > 0 ||
-            OnWorkflowDispatchRequiredInputs.Length > 0)
-        {
-            yield return new GitHubActionsWorkflowDispatchTrigger
-            {
-                OptionalInputs = OnWorkflowDispatchOptionalInputs,
-                RequiredInputs = OnWorkflowDispatchRequiredInputs
-            };
-        }
-
-        if (!string.IsNullOrEmpty(OnCronSchedule))
-        {
-            yield return new GitHubActionsScheduledTrigger { Cron = OnCronSchedule };
-        }
     }
 }

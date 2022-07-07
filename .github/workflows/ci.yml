@@ -23,11 +23,12 @@ on:
 
 jobs:
   android-build:
-    name: android-build
+    name: Android Build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Cache ~/.nuget/packages
         uses: actions/cache@v2
@@ -47,11 +48,12 @@ jobs:
           name: android-build
           path: artifacts/android-build
   ios-build:
-    name: ios-build
+    name: iOS Build
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: 'Setup .NET 6.0.x'
         uses: actions/setup-dotnet@v2
@@ -78,11 +80,12 @@ jobs:
           name: ios-build
           path: artifacts/ios-build
   maccatalyst-build:
-    name: maccatalyst-build
+    name: MacCatalyst Build
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: 'Setup .NET 6.0.x'
         uses: actions/setup-dotnet@v2
@@ -109,11 +112,12 @@ jobs:
           name: maccatalyst-build
           path: artifacts/maccatalyst-build
   windows-build:
-    name: windows-build
+    name: Windows Build
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Cache ~/.nuget/packages
         uses: actions/cache@v2
@@ -134,19 +138,20 @@ jobs:
         with:
           name: windows-build
           path: artifacts/windows-build
-  compile-lib:
-    name: compile-lib
+  compile-library:
+    name: Compile Library
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Cache ~/.nuget/packages
         uses: actions/cache@v2
         with:
           path: |
             ~/.nuget/packages
-          key: compile-lib-${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
+          key: compile-library-${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
       - name: Run './build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln --project-name AvantiPoint.Nuke.Maui'
         run: ./build.cmd CompileLib --solution AvantiPoint.Nuke.Maui.sln --project-name AvantiPoint.Nuke.Maui
       - name: Upload Artifact
@@ -155,12 +160,13 @@ jobs:
           name: nuget
           path: artifacts
   publish-internal:
-    name: publish-internal
-    needs: [compile-lib,android-build,ios-build,maccatalyst-build,windows-build]
+    name: Publish Internal
+    needs: [android-build,ios-build,maccatalyst-build,windows-build,compile-library]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
         with:
+          submodules: false
           fetch-depth: 0
       - name: Download 'nuget'
         uses: actions/download-artifact@v3
@@ -178,8 +184,8 @@ jobs:
         env:
           InHouseNugetFeed: ${{ secrets.IN_HOUSE_NUGET_FEED }}
           InHouseApiKey: ${{ secrets.IN_HOUSE_API_KEY }}
-          CodeSignCertificate: ${{ secrets.CODESIGNCERTIFICATE }}
-          CodeSignClientId: ${{ secrets.CODESIGNCLIENTID }}
-          CodeSignClientSecret: ${{ secrets.CODESIGNCLIENTSECRET }}
-          CodeSignKeyVault: ${{ secrets.CODESIGNKEYVAULT }}
-          CodeSignTenantId: ${{ secrets.CODESIGNTENANTID }}
+          AzureKeyVault: ${{ secrets.CODESIGNKEYVAULT }}
+          AzureKeyVaultCertificate: ${{ secrets.CODESIGNCERTIFICATE }}
+          AzureKeyVaultClientId: ${{ secrets.CODESIGNCLIENTID }}
+          AzureKeyVaultClientSecret: ${{ secrets.CODESIGNCLIENTSECRET }}
+          AzureKeyVaultTenantId: ${{ secrets.CODESIGNTENANTID }}
