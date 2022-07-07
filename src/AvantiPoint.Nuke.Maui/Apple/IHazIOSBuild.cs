@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.Json;
 using AvantiPoint.Nuke.Maui.Apple.AppStoreConnect;
 using AvantiPoint.Nuke.Maui.Extensions;
@@ -60,6 +59,7 @@ public interface IHazIOSBuild :
             };
             codesignKey.NotNullOrEmpty("Invalid Profile Type - {ProfileType}", profile.Attributes.ProfileType.ToString());
 
+            var outputDirectory = ArtifactsDirectory / "ios-build";
             DotNetPublish(settings =>
                 settings.SetConfiguration(Configuration)
                     .SetProject(Project)
@@ -77,9 +77,9 @@ public interface IHazIOSBuild :
                     .SetProcessExecutionTimeout(CompileTimeout)
                     .SetContinuousIntegrationBuild(!IsLocalBuild)
                     .SetDeterministic(!IsLocalBuild)
-                    .SetOutput(ArtifactsDirectory / "ios-build")
+                    .SetOutput(outputDirectory)
                     .When(Verbosity == Verbosity.Verbose, _ => _.SetVerbosity(DotNetVerbosity.Diagnostic))
                     .When(IsLocalBuild, _ => _
-                        .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
+                        .SetProcessArgumentConfigurator(_ => _.Add($"/bl:{outputDirectory / "ios.binlog"}"))));
         });
 }

@@ -52,7 +52,7 @@ public interface IHazMacCatalystBuild :
                     .SetDeterministic(!IsLocalBuild)
                     .SetOutput(outputDirectory)
                     .When(IsLocalBuild, _ => _
-                        .SetProcessArgumentConfigurator(_ => _.Add("/bl"))));
+                        .SetProcessArgumentConfigurator(_ => _.Add($"/bl:{outputDirectory / "maccatalyst.binlog"}"))));
 
             Assert.NotEmpty(outputDirectory.GlobFiles("*.pkg"), "Could not locate a Pkg file in the publish directory");
         });
