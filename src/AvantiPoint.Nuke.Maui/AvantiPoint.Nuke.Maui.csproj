@@ -7,6 +7,8 @@
     <NukeBaseNamespace>$(MSBuildProjectName).Tools</NukeBaseNamespace>
     <NukeUseNestedNamespaces>true</NukeUseNestedNamespaces>
     <NukeBaseDirectory>$(MSBuildProjectDirectory)\Tools</NukeBaseDirectory>
+    <Description>The AvantiPoint Nuke Maui package is an extension of the Nuke.Build framework. This is purpose build for .NET MAUI developers and contains an abstraction layer on top of Nuke for completely writing your CI Pipeline in C# with the YAML auto generated for both Azure Pipelines &amp; GitHub Actions.</Description>
+    <PackageTags>ios;android;windows;winui;maccatalyst;nuke;ci;devops;maui;dotnetmaui;dotnet;github actions;azure pipelines</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
