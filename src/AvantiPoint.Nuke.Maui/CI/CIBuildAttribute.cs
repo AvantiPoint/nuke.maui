@@ -44,28 +44,15 @@ public abstract class CIBuildAttribute : ConfigurationAttributeBase
             .Where(x => !x.StartsWith("--"))
             .Distinct();
 
-        try
+        targetNames.ForEach(x =>
         {
-            targetNames.ForEach(x =>
-            {
-                x.NotNullOrEmpty("The job name cannot be null or empty.");
-                Assert.True(executableTargets.Select(_ => _.Name).Contains(x),
-                    $"The Target '{x}' does not exist");
-            });
+            x.NotNullOrEmpty("The job name cannot be null or empty.");
+            Assert.True(executableTargets.Select(_ => _.Name).Contains(x),
+                $"The Target '{x}' does not exist");
+        });
 
-            var targets = executableTargets.Where(x => targetNames.Contains(x.Name));
-            return BuildConfiguration(build, targets);
-        }
-        catch (Exception ex)
-        {
-            if (System.Diagnostics.Debugger.IsAttached)
-                System.Diagnostics.Debugger.Break();
-            else
-                System.Diagnostics.Debugger.Launch();
-            Log.Error(ex.ToString());
-         
-            throw;
-        }
+        var targets = executableTargets.Where(x => targetNames.Contains(x.Name));
+        return BuildConfiguration(build, targets);
     }
 
     protected abstract ConfigurationEntity BuildConfiguration(NukeBuild build, IEnumerable<ExecutableTarget> relevantTargets);
