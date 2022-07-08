@@ -112,12 +112,6 @@ stages:
     - script: |
         ./build.cmd CompileWindows
       displayName: 'Run ./build.cmd CompileWindows'
-      env:
-        AzureKeyVault: $(CODESIGNKEYVAULT)
-        AzureKeyVaultCertificate: $(CODESIGNCERTIFICATE)
-        AzureKeyVaultClientId: $(CODESIGNCLIENTID)
-        AzureKeyVaultClientSecret: $(CODESIGNCLIENTSECRET)
-        AzureKeyVaultTenantId: $(CODESIGNTENANTID)
     - task: PublishPipelineArtifact@1
       inputs:
         artifactName: windows-build

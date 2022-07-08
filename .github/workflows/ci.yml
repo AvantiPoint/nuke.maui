@@ -127,12 +127,6 @@ jobs:
           key: windows-build-${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
       - name: Run './build.cmd CompileWindows'
         run: ./build.cmd CompileWindows
-        env:
-          AzureKeyVault: ${{ secrets.CODESIGNKEYVAULT }}
-          AzureKeyVaultCertificate: ${{ secrets.CODESIGNCERTIFICATE }}
-          AzureKeyVaultClientId: ${{ secrets.CODESIGNCLIENTID }}
-          AzureKeyVaultClientSecret: ${{ secrets.CODESIGNCLIENTSECRET }}
-          AzureKeyVaultTenantId: ${{ secrets.CODESIGNTENANTID }}
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:

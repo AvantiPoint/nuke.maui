@@ -15,7 +15,8 @@ public class PR : CIBuild
                 new AndroidJob(),
                 new iOSJob(),
                 new MacCatalystJob(),
-                new SignedWindowsBuild(),
+                //new SignedWindowsBuild(),
+                new WindowsJob(),
             }
         }
     };
