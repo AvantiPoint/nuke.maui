@@ -21,8 +21,11 @@ public interface IDotNetClean : IHazArtifacts, IHazConfiguration, IHazProject
 
             var obj = Project.Path / "obj";
             if(obj.Exists())
-                Directory.EnumerateDirectories(obj)
-                    .ForEach(x => Directory.Delete(x, true));
+            {
+                var directories = Directory.EnumerateDirectories(obj);
+                if(directories.Any())
+                    directories.ForEach(x => Directory.Delete(x, true));
+            }
 
             var bin = Project.Path / "bin";
             if (bin.Exists())
