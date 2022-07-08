@@ -74,7 +74,6 @@ public interface IHazIOSBuild :
                         .AddProperty(BuildProps.Maui.ApplicationVersion, ApplicationVersion))
                     .When(Linker != null, _ => _
                         .AddProperty(BuildProps.iOS.MtouchLink, Linker))
-                    .EnableNoRestore()
                     .SetProcessExecutionTimeout(CompileTimeout)
                     .SetContinuousIntegrationBuild(!IsLocalBuild)
                     .SetDeterministic(!IsLocalBuild)
