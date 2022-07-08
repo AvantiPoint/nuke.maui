@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AvantiPoint.Nuke.Maui.CI.AzurePipelines.Configuration;
-using AvantiPoint.Nuke.Maui.CI.Configuration;
+﻿using AvantiPoint.Nuke.Maui.CI.AzurePipelines.Configuration;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.CI;
