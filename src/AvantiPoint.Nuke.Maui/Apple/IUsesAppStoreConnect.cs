@@ -23,6 +23,7 @@ public interface IUsesAppStoreConnect : INukeBuild
 
     Target GenerateJwt => _ => _
         .Description("This is a helper for local testing. You should avoid using this in CI as it will print the generated JWT to the logs.")
+        .OnlyWhenStatic(() => IsLocalBuild)
         .Executes(() =>
         {
             var token = GenerateToken();
@@ -31,15 +32,18 @@ public interface IUsesAppStoreConnect : INukeBuild
 
     async Task<GetProfileResponse> GetProvisioningProfiles()
     {
+        Log.Debug("Getting Apple Provisioning Profiles.");
         var client = AppStoreConnectApi.GetClient(GenerateToken());
         using var response = await client.GetProfiles();
         Assert.True(response.IsSuccessStatusCode, $"Unable to successfully connect to the AppStore Connect API. ({response.StatusCode})");
         response.Content.NotNull("AppStore Connect API Response produced an empty response.");
+        Log.Debug("Retrieved Provisioning Profiles.");
         return response.Content!;
     }
 
     string GenerateToken(params string[] scopes)
     {
+        Log.Debug("Restoring the Apple AuthKey P8 file.");
         var p8 = Encoding.Default.GetString(Convert.FromBase64String(AppleAuthKeyP8));
         var key = ECDsa.Create();
         key.NotNull("Unable to create ECDsa Key");
@@ -50,6 +54,7 @@ public interface IUsesAppStoreConnect : INukeBuild
         if (scopes.Any())
             claims.Add("scope", scopes);
 
+        Log.Debug("Creating security token to connect to AppStore Connect API.");
         return new JsonWebTokenHandler().CreateToken(new SecurityTokenDescriptor
         {
             Issuer = AppleIssuerId,

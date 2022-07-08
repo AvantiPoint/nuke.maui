@@ -36,9 +36,13 @@ public interface IHazAndroidKeystore : INukeBuild
                 return;
             }
 
+            Log.Debug("Restoring Android Keystore.");
             var contents = Encoding.Default.GetBytes(AndroidKeystoreB64!);
             File.WriteAllBytes(KeystorePath, contents);
 
             Assert.True(KeystorePath.FileExists(), "Something went wrong, the keystore could not be found at the expected location.");
+
+            var keystoreName = KeystorePath.Name;
+            Log.Debug("Android Keystore '{keystoreName}' has been restored.", keystoreName);
         });
 }

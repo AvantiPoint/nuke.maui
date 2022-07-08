@@ -31,28 +31,31 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
         .Requires(() => P12Password)
         .Executes(() =>
         {
+            Log.Debug("Restoring Apple Developer Certificate.");
             var data = Convert.FromBase64String(P12B64);
             File.WriteAllBytes(P12CertifiatePath, data);
+            var relativePath = EnvironmentInfo.WorkingDirectory.GetRelativePathTo(P12CertifiatePath);
+            Assert.True(P12CertifiatePath.FileExists(), "Something went wrong, the Apple Developer Certificate was not restored and does not exist at the expected path.");
+            Log.Debug("Apple Developer Certificate restored to path '{relativePath}'.", relativePath);
 
             try
             {
                 if(!KeychainPath.Exists())
                 {
+                    Log.Debug("Creating Temporary Signing Keychain.");
                     SecurityCreateKeychain(settings => settings
                         .SetPassword(P12Password)
                         .SetKeychain(KeychainPath));
                     Security($"set-keychain-settings -lut 21600 {KeychainPath}");
                 }
-                else
-                {
-                    Log.Information("Temporary Keychain already exists. Attempting to unlock keychain");
-                }
 
                 // Unlock Keychain
+                Log.Debug("Unlocking Temporary Signing Keychain.");
                 SecurityUnlockKeychain(_ => _
                     .SetPassword(P12Password)
                     .SetKeychain(KeychainPath));
                 // Import Pkcs12
+                Log.Debug("Importing Apple Developer Certificate from: {relativePath}", relativePath);
                 SecurityImport(_ => _
                     .SetCertificatePath(P12CertifiatePath)
                     .SetPassword(P12Password)
@@ -64,11 +67,13 @@ public interface IHazAppleCertificate : IHazGitRepository, INukeBuild
                         .Add("-T /usr/bin/codesign")
                         .Add("-T /usr/bin/security")));
                 // SetPartitionList
+                Log.Debug("Setting the Keychain Partition List");
                 SecuritySetPartitionList(_ => _
                     .SetAllowedList("apple-tool:,apple:")
                     .SetPassword(P12Password)
                     .SetKeychain(KeychainPath));
                 // Update Keychain list
+                Log.Debug("Updating the Keychain List");
                 Security($"list-keychain -d user -s {KeychainPath} login.keychain");
             }
             catch
