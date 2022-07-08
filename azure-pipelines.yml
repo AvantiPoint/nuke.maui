@@ -121,21 +121,15 @@ stages:
     - checkout: self
       fetchDepth: 0
       clean: true
-    - task: Cache@2
-      displayName: Cache (nuke-temp)
-      inputs:
-        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
-        restoreKeys: $(Agent.OS) | nuke-temp
-        path: .nuke/temp
-    - task: Cache@2
-      displayName: Cache (nuget-packages)
-      inputs:
-        key: $(Agent.OS) | nuget-packages | **/global.json, **/*.csproj
-        restoreKeys: $(Agent.OS) | nuget-packages
-        path: $(USERPROFILE)/.nuget/packages
     - script: |
         ./build.cmd CompileWindows
       displayName: 'Run ./build.cmd CompileWindows'
+      env:
+        AzureKeyVault: $(CODESIGNKEYVAULT)
+        AzureKeyVaultCertificate: $(CODESIGNCERTIFICATE)
+        AzureKeyVaultClientId: $(CODESIGNCLIENTID)
+        AzureKeyVaultClientSecret: $(CODESIGNCLIENTSECRET)
+        AzureKeyVaultTenantId: $(CODESIGNTENANTID)
     - task: PublishPipelineArtifact@1
       inputs:
         artifactName: windows-build

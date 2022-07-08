@@ -134,7 +134,7 @@ public class GitHubWorkflowAttribute : CIBuildAttribute
             Sdks = job.DotNetSdks.ToArray()
         };
 
-        if (job.CacheKeyFiles.Any())
+        if (job.CacheIncludePatterns.Any())
         {
             yield return new GitHubActionsCacheStepV3
             {
