@@ -1,6 +1,5 @@
 ﻿using JetBrains.Annotations;
 using Nuke.Common;
-using Nuke.Components;
 using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
@@ -23,7 +22,15 @@ public interface IHazMauiWorkload : INukeBuild
                 return;
             }
 
-            DotNet("workload install maui");
-            DotNet("workload install android ios maccatalyst tvos macos maui wasm-tools maui-maccatalyst");
+            var sources = string.Empty;
+            if(EnvironmentInfo.IsWin)
+            {
+                sources = WindowsWorkloadHelpers.UpdateManifest();
+                DotNet($"workload update {sources}");
+                sources = $"--skip-manifest-update {sources} --source https://api.nuget.org/v3/index.json";
+            }
+
+            DotNet($"workload install maui {sources}");
+            DotNet($"workload install android ios maccatalyst tvos macos maui wasm-tools maui-maccatalyst {sources}");
         });
 }
