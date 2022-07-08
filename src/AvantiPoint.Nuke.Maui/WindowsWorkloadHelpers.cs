@@ -13,6 +13,8 @@ internal static class WindowsWorkloadHelpers
     public static AbsolutePath SdkManifests => DotNetDirectory / "sdk-manifests";
     public static AbsolutePath Workloads => DotNetDirectory / "metadata" / "workloads";
 
+    public static string[] ExtraSources { get; private set; } = Array.Empty<string>();
+
     public static string UpdateManifest()
     {
         foreach(AbsolutePath workloadSdk in Directory.GetDirectories(Workloads))
@@ -64,6 +66,7 @@ internal static class WindowsWorkloadHelpers
             }
         }
 
+        ExtraSources = sources.ToArray();
         return sources.Select(x => $"--source {x}").JoinSpace();
     }
 }
