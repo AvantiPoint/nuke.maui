@@ -7,6 +7,9 @@ using Nuke.Common.Utilities.Collections;
 
 namespace AvantiPoint.Nuke.Maui;
 
+[AndroidKeystoreCleanup]
+[AppleCertificateCleanup]
+[WinUICodeSignCleanup]
 public abstract class MauiBuild : NukeBuild,
     IHazAndroidBuild,
     IHazIOSBuild,

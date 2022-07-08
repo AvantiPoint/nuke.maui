@@ -198,6 +198,51 @@ namespace AvantiPoint.Nuke.Maui.Tools.Security
             return configurator.Invoke(SecurityImport, SecurityLogger, degreeOfParallelism, completeOnFailure);
         }
         /// <summary>
+        ///   <p>Delete the keychain</p>
+        ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+        /// </summary>
+        /// <remarks>
+        ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+        ///   <ul>
+        ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecurityDeleteSettings.Keychain"/></li>
+        ///   </ul>
+        /// </remarks>
+        public static IReadOnlyCollection<Output> SecurityDelete(SecurityDeleteSettings toolSettings = null)
+        {
+            toolSettings = toolSettings ?? new SecurityDeleteSettings();
+            using var process = ProcessTasks.StartProcess(toolSettings);
+            process.AssertZeroExitCode();
+            return process.Output;
+        }
+        /// <summary>
+        ///   <p>Delete the keychain</p>
+        ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+        /// </summary>
+        /// <remarks>
+        ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+        ///   <ul>
+        ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecurityDeleteSettings.Keychain"/></li>
+        ///   </ul>
+        /// </remarks>
+        public static IReadOnlyCollection<Output> SecurityDelete(Configure<SecurityDeleteSettings> configurator)
+        {
+            return SecurityDelete(configurator(new SecurityDeleteSettings()));
+        }
+        /// <summary>
+        ///   <p>Delete the keychain</p>
+        ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+        /// </summary>
+        /// <remarks>
+        ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+        ///   <ul>
+        ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecurityDeleteSettings.Keychain"/></li>
+        ///   </ul>
+        /// </remarks>
+        public static IEnumerable<(SecurityDeleteSettings Settings, IReadOnlyCollection<Output> Output)> SecurityDelete(CombinatorialConfigure<SecurityDeleteSettings> configurator, int degreeOfParallelism = 1, bool completeOnFailure = false)
+        {
+            return configurator.Invoke(SecurityDelete, SecurityLogger, degreeOfParallelism, completeOnFailure);
+        }
+        /// <summary>
         ///   <p>Set the partition list of a key</p>
         ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
         /// </summary>
@@ -367,6 +412,33 @@ namespace AvantiPoint.Nuke.Maui.Tools.Security
               .Add("-t {value}", Type)
               .Add("-f {value}", Format)
               .Add("-k {value}", KeychainPath);
+            return base.ConfigureProcessArguments(arguments);
+        }
+    }
+    #endregion
+    #region SecurityDeleteSettings
+    /// <summary>
+    ///   Used within <see cref="SecurityTasks"/>.
+    /// </summary>
+    [PublicAPI]
+    [ExcludeFromCodeCoverage]
+    [Serializable]
+    public partial class SecurityDeleteSettings : ToolSettings
+    {
+        /// <summary>
+        ///   Path to the Security executable.
+        /// </summary>
+        public override string ProcessToolPath => base.ProcessToolPath ?? SecurityTasks.SecurityPath;
+        public override Action<OutputType, string> ProcessCustomLogger => SecurityTasks.SecurityLogger;
+        /// <summary>
+        ///   The keychain to remove
+        /// </summary>
+        public virtual string Keychain { get; internal set; }
+        protected override Arguments ConfigureProcessArguments(Arguments arguments)
+        {
+            arguments
+              .Add("delete-keychain")
+              .Add("{value}", Keychain);
             return base.ConfigureProcessArguments(arguments);
         }
     }
@@ -713,6 +785,40 @@ namespace AvantiPoint.Nuke.Maui.Tools.Security
         {
             toolSettings = toolSettings.NewInstance();
             toolSettings.KeychainPath = null;
+            return toolSettings;
+        }
+        #endregion
+    }
+    #endregion
+    #region SecurityDeleteSettingsExtensions
+    /// <summary>
+    ///   Used within <see cref="SecurityTasks"/>.
+    /// </summary>
+    [PublicAPI]
+    [ExcludeFromCodeCoverage]
+    public static partial class SecurityDeleteSettingsExtensions
+    {
+        #region Keychain
+        /// <summary>
+        ///   <p><em>Sets <see cref="SecurityDeleteSettings.Keychain"/></em></p>
+        ///   <p>The keychain to remove</p>
+        /// </summary>
+        [Pure]
+        public static T SetKeychain<T>(this T toolSettings, string keychain) where T : SecurityDeleteSettings
+        {
+            toolSettings = toolSettings.NewInstance();
+            toolSettings.Keychain = keychain;
+            return toolSettings;
+        }
+        /// <summary>
+        ///   <p><em>Resets <see cref="SecurityDeleteSettings.Keychain"/></em></p>
+        ///   <p>The keychain to remove</p>
+        /// </summary>
+        [Pure]
+        public static T ResetKeychain<T>(this T toolSettings) where T : SecurityDeleteSettings
+        {
+            toolSettings = toolSettings.NewInstance();
+            toolSettings.Keychain = null;
             return toolSettings;
         }
         #endregion

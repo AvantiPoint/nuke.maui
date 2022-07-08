@@ -96,6 +96,22 @@
       }
     },
     {
+      "help": "Delete the keychain",
+      "postfix": "Delete",
+      "omitCommonProperties": true,
+      "definiteArgument": "delete-keychain",
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "Keychain",
+            "type": "string",
+            "format": "{value}",
+            "help": "The keychain to remove"
+          }
+        ]
+      }
+    },
+    {
       "help": "Set the partition list of a key",
       "postfix": "SetPartitionList",
       "omitCommonProperties": true,

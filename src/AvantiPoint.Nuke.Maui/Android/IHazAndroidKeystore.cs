@@ -2,7 +2,6 @@ using System.Text;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.IO;
-using Nuke.Components;
 using Serilog;
 
 namespace AvantiPoint.Nuke.Maui.Android;

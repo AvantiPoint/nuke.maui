@@ -1,4 +1,5 @@
 ﻿using Nuke.Common;
+using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.AzureSignTool;
 using Nuke.Common.Tools.DotNet;
@@ -11,6 +12,8 @@ namespace AvantiPoint.Nuke.Maui.Windows;
 
 internal static class WinUIAppSigning
 {
+    public static AbsolutePath CertificatePath => NukeBuild.TemporaryDirectory / "WinSignCert.pfx";
+
     public static bool LocalCodeSign(this IWinUICodeSign codeSign, IEnumerable<string> files)
     {
         if (string.IsNullOrEmpty(codeSign.PfxB64) || string.IsNullOrEmpty(codeSign.PfxPassword))
@@ -19,14 +22,16 @@ internal static class WinUIAppSigning
             return false;
         }
 
-        var certPath = codeSign.TemporaryDirectory / "WinSignCert.pfx";
+        Log.Debug("Restoring PFX");
         var data = Convert.FromBase64String(codeSign.PfxB64);
-        File.WriteAllBytes(certPath, data);
+        File.WriteAllBytes(CertificatePath, data);
+        Assert.FileExists(CertificatePath, "Could not locate the restored certificate");
+        Log.Debug("PFX Restored");
 
         SignTool(_ => _
             .EnableAutomaticSelection()
             .SetFileDigestAlgorithm(codeSign.DigestAlgorithm)
-            .SetFile(certPath)
+            .SetFile(CertificatePath)
             .SetPassword(codeSign.PfxPassword)
             .AddFiles(files));
         return true;
