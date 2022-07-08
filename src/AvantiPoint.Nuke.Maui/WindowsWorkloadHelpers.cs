@@ -1,16 +1,30 @@
 ﻿using Newtonsoft.Json.Linq;
 using Nuke.Common.IO;
 using Nuke.Common.Utilities;
+using Serilog;
 
 namespace AvantiPoint.Nuke.Maui;
 
 internal static class WindowsWorkloadHelpers
 {
     public const string EngineeringFeed = "https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet{0}/nuget/v3/index.json";
-    public static AbsolutePath SdkManifests => (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) / "dotnet" / "sdk-manifests";
+
+    public static AbsolutePath DotNetDirectory => (AbsolutePath)Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) / "dotnet";
+    public static AbsolutePath SdkManifests => DotNetDirectory / "sdk-manifests";
+    public static AbsolutePath Workloads => DotNetDirectory / "metadata" / "workloads";
 
     public static string UpdateManifest()
     {
+        foreach(AbsolutePath workloadSdk in Directory.GetDirectories(Workloads))
+        {
+            var msiFile = workloadSdk / "installertype" / "msi";
+            if (msiFile.FileExists())
+            {
+                Log.Debug($"Deleting msi installer type: {msiFile}");
+                File.Delete(msiFile);
+            }
+        }
+
         var sdks = SdkManifests.GlobDirectories("*");
         var sources = sdks.Select(x => x.Name[0].ToString())
             .Where(x => int.TryParse(x, out var version) && version >= 6)
@@ -44,10 +58,12 @@ internal static class WindowsWorkloadHelpers
                     alias["win-arm64"] = alias["win-x64"];
                 }
 
-                File.WriteAllText(manifestPath, manifest.ToString(Newtonsoft.Json.Formatting.Indented));
+                var updated = manifest.ToString(Newtonsoft.Json.Formatting.Indented);
+                Log.Debug($"Updating: {manifestPath}");
+                File.WriteAllText(manifestPath, updated);
             }
         }
+
         return sources.Select(x => $"--source {x}").JoinSpace();
-        //return ;
     }
 }
