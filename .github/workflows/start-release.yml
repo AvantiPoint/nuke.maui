@@ -1,0 +1,27 @@
+name: Start NuGet Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: avantipoint/workflow-templates/.github/workflows/dotnet-build.yml@master
+    with:
+      name: Nuke.Maui
+      solution-path: src/AvantiPoint.Nuke.Maui/AvantiPoint.Nuke.Maui.csproj
+      code-sign: true
+      run-tests: false
+    secrets:
+      codeSignKeyVault: ${{ secrets.CodeSignKeyVault }}
+      codeSignClientId: ${{ secrets.CodeSignClientId }}
+      codeSignTenantId: ${{ secrets.CodeSignTenantId }}
+      codeSignClientSecret: ${{ secrets.CodeSignClientSecret }}
+      codeSignCertificate: ${{ secrets.CodeSignCertificate }}
+
+  release:
+    uses: avantipoint/workflow-templates/.github/workflows/generate-release.yml@master
+    needs: [build]
+    permissions:
+      contents: write
+    with:
+      package-name: AvantiPoint.Nuke.Maui
