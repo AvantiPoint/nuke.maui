@@ -25,7 +25,6 @@ on:
       - '!.editorconfig'
       - '!docs/**'
       - '!**/*.md'
-      - '!.github/*'
 
 jobs:
   android-build:
