@@ -8,5 +8,8 @@ public enum HostedAgent
     Windows,
 
     [EnumValue("macos-12")]
-    Mac
+    Mac,
+
+    [EnumValue("ubuntu-latest")]
+    Linux,
 }

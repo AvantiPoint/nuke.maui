@@ -94,6 +94,47 @@
           }
         ]
       }
+    },
+    {
+      "help": "Set the partition list of a key",
+      "postfix": "SetPartitionList",
+      "omitCommonProperties": true,
+      "definiteArgument": "set-key-partition-list",
+      "settingsClass": {
+        "properties": [
+          {
+            "name": "ApplicationLabel",
+            "type": "string",
+            "format": "-a {value}",
+            "help": "Match \"application label\" string"
+          },
+          {
+            "name": "Creator",
+            "type": "string",
+            "format": "-c {value}",
+            "help": "Match \"creator\" (four-character code)"
+          },
+          {
+            "name": "Password",
+            "type": "string",
+            "format": "-k {value}",
+            "secret": true,
+            "help": "password for keychain"
+          },
+          {
+            "name": "AllowedList",
+            "type": "string",
+            "format": "-S {value}",
+            "help": "Comma-separated list of allowed partition IDs"
+          },
+          {
+            "name": "Keychain",
+            "type": "string",
+            "format": "{value}",
+            "isTailArgument": true
+          }
+        ]
+      }
     }
   ],
   "enumerations": [

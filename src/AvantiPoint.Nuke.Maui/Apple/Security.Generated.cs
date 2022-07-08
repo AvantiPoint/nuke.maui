@@ -197,6 +197,63 @@ public static partial class SecurityTasks
     {
         return configurator.Invoke(SecurityImport, SecurityLogger, degreeOfParallelism, completeOnFailure);
     }
+    /// <summary>
+    ///   <p>Set the partition list of a key</p>
+    ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+    /// </summary>
+    /// <remarks>
+    ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+    ///   <ul>
+    ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecuritySetPartitionListSettings.Keychain"/></li>
+    ///     <li><c>-a</c> via <see cref="SecuritySetPartitionListSettings.ApplicationLabel"/></li>
+    ///     <li><c>-c</c> via <see cref="SecuritySetPartitionListSettings.Creator"/></li>
+    ///     <li><c>-k</c> via <see cref="SecuritySetPartitionListSettings.Password"/></li>
+    ///     <li><c>-S</c> via <see cref="SecuritySetPartitionListSettings.AllowedList"/></li>
+    ///   </ul>
+    /// </remarks>
+    public static IReadOnlyCollection<Output> SecuritySetPartitionList(SecuritySetPartitionListSettings toolSettings = null)
+    {
+        toolSettings = toolSettings ?? new SecuritySetPartitionListSettings();
+        using var process = ProcessTasks.StartProcess(toolSettings);
+        process.AssertZeroExitCode();
+        return process.Output;
+    }
+    /// <summary>
+    ///   <p>Set the partition list of a key</p>
+    ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+    /// </summary>
+    /// <remarks>
+    ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+    ///   <ul>
+    ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecuritySetPartitionListSettings.Keychain"/></li>
+    ///     <li><c>-a</c> via <see cref="SecuritySetPartitionListSettings.ApplicationLabel"/></li>
+    ///     <li><c>-c</c> via <see cref="SecuritySetPartitionListSettings.Creator"/></li>
+    ///     <li><c>-k</c> via <see cref="SecuritySetPartitionListSettings.Password"/></li>
+    ///     <li><c>-S</c> via <see cref="SecuritySetPartitionListSettings.AllowedList"/></li>
+    ///   </ul>
+    /// </remarks>
+    public static IReadOnlyCollection<Output> SecuritySetPartitionList(Configure<SecuritySetPartitionListSettings> configurator)
+    {
+        return SecuritySetPartitionList(configurator(new SecuritySetPartitionListSettings()));
+    }
+    /// <summary>
+    ///   <p>Set the partition list of a key</p>
+    ///   <p>For more details, visit the <a href="https://developer.apple.com">official website</a>.</p>
+    /// </summary>
+    /// <remarks>
+    ///   <p>This is a <a href="http://www.nuke.build/docs/authoring-builds/cli-tools.html#fluent-apis">CLI wrapper with fluent API</a> that allows to modify the following arguments:</p>
+    ///   <ul>
+    ///     <li><c>&lt;keychain&gt;</c> via <see cref="SecuritySetPartitionListSettings.Keychain"/></li>
+    ///     <li><c>-a</c> via <see cref="SecuritySetPartitionListSettings.ApplicationLabel"/></li>
+    ///     <li><c>-c</c> via <see cref="SecuritySetPartitionListSettings.Creator"/></li>
+    ///     <li><c>-k</c> via <see cref="SecuritySetPartitionListSettings.Password"/></li>
+    ///     <li><c>-S</c> via <see cref="SecuritySetPartitionListSettings.AllowedList"/></li>
+    ///   </ul>
+    /// </remarks>
+    public static IEnumerable<(SecuritySetPartitionListSettings Settings, IReadOnlyCollection<Output> Output)> SecuritySetPartitionList(CombinatorialConfigure<SecuritySetPartitionListSettings> configurator, int degreeOfParallelism = 1, bool completeOnFailure = false)
+    {
+        return configurator.Invoke(SecuritySetPartitionList, SecurityLogger, degreeOfParallelism, completeOnFailure);
+    }
 }
 #region SecurityCreateKeychainSettings
 /// <summary>
@@ -310,6 +367,50 @@ public partial class SecurityImportSettings : ToolSettings
           .Add("-t {value}", Type)
           .Add("-f {value}", Format)
           .Add("-k {value}", KeychainPath);
+        return base.ConfigureProcessArguments(arguments);
+    }
+}
+#endregion
+#region SecuritySetPartitionListSettings
+/// <summary>
+///   Used within <see cref="SecurityTasks"/>.
+/// </summary>
+[PublicAPI]
+[ExcludeFromCodeCoverage]
+[Serializable]
+public partial class SecuritySetPartitionListSettings : ToolSettings
+{
+    /// <summary>
+    ///   Path to the Security executable.
+    /// </summary>
+    public override string ProcessToolPath => base.ProcessToolPath ?? SecurityTasks.SecurityPath;
+    public override Action<OutputType, string> ProcessCustomLogger => SecurityTasks.SecurityLogger;
+    /// <summary>
+    ///   Match "application label" string
+    /// </summary>
+    public virtual string ApplicationLabel { get; internal set; }
+    /// <summary>
+    ///   Match "creator" (four-character code)
+    /// </summary>
+    public virtual string Creator { get; internal set; }
+    /// <summary>
+    ///   password for keychain
+    /// </summary>
+    public virtual string Password { get; internal set; }
+    /// <summary>
+    ///   Comma-separated list of allowed partition IDs
+    /// </summary>
+    public virtual string AllowedList { get; internal set; }
+    public virtual string Keychain { get; internal set; }
+    protected override Arguments ConfigureProcessArguments(Arguments arguments)
+    {
+        arguments
+          .Add("set-key-partition-list")
+          .Add("-a {value}", ApplicationLabel)
+          .Add("-c {value}", Creator)
+          .Add("-k {value}", Password, secret: true)
+          .Add("-S {value}", AllowedList)
+          .Add("{value}", Keychain);
         return base.ConfigureProcessArguments(arguments);
     }
 }
@@ -612,6 +713,134 @@ public static partial class SecurityImportSettingsExtensions
     {
         toolSettings = toolSettings.NewInstance();
         toolSettings.KeychainPath = null;
+        return toolSettings;
+    }
+    #endregion
+}
+#endregion
+#region SecuritySetPartitionListSettingsExtensions
+/// <summary>
+///   Used within <see cref="SecurityTasks"/>.
+/// </summary>
+[PublicAPI]
+[ExcludeFromCodeCoverage]
+public static partial class SecuritySetPartitionListSettingsExtensions
+{
+    #region ApplicationLabel
+    /// <summary>
+    ///   <p><em>Sets <see cref="SecuritySetPartitionListSettings.ApplicationLabel"/></em></p>
+    ///   <p>Match "application label" string</p>
+    /// </summary>
+    [Pure]
+    public static T SetApplicationLabel<T>(this T toolSettings, string applicationLabel) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.ApplicationLabel = applicationLabel;
+        return toolSettings;
+    }
+    /// <summary>
+    ///   <p><em>Resets <see cref="SecuritySetPartitionListSettings.ApplicationLabel"/></em></p>
+    ///   <p>Match "application label" string</p>
+    /// </summary>
+    [Pure]
+    public static T ResetApplicationLabel<T>(this T toolSettings) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.ApplicationLabel = null;
+        return toolSettings;
+    }
+    #endregion
+    #region Creator
+    /// <summary>
+    ///   <p><em>Sets <see cref="SecuritySetPartitionListSettings.Creator"/></em></p>
+    ///   <p>Match "creator" (four-character code)</p>
+    /// </summary>
+    [Pure]
+    public static T SetCreator<T>(this T toolSettings, string creator) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Creator = creator;
+        return toolSettings;
+    }
+    /// <summary>
+    ///   <p><em>Resets <see cref="SecuritySetPartitionListSettings.Creator"/></em></p>
+    ///   <p>Match "creator" (four-character code)</p>
+    /// </summary>
+    [Pure]
+    public static T ResetCreator<T>(this T toolSettings) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Creator = null;
+        return toolSettings;
+    }
+    #endregion
+    #region Password
+    /// <summary>
+    ///   <p><em>Sets <see cref="SecuritySetPartitionListSettings.Password"/></em></p>
+    ///   <p>password for keychain</p>
+    /// </summary>
+    [Pure]
+    public static T SetPassword<T>(this T toolSettings, [Secret] string password) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Password = password;
+        return toolSettings;
+    }
+    /// <summary>
+    ///   <p><em>Resets <see cref="SecuritySetPartitionListSettings.Password"/></em></p>
+    ///   <p>password for keychain</p>
+    /// </summary>
+    [Pure]
+    public static T ResetPassword<T>(this T toolSettings) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Password = null;
+        return toolSettings;
+    }
+    #endregion
+    #region AllowedList
+    /// <summary>
+    ///   <p><em>Sets <see cref="SecuritySetPartitionListSettings.AllowedList"/></em></p>
+    ///   <p>Comma-separated list of allowed partition IDs</p>
+    /// </summary>
+    [Pure]
+    public static T SetAllowedList<T>(this T toolSettings, string allowedList) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.AllowedList = allowedList;
+        return toolSettings;
+    }
+    /// <summary>
+    ///   <p><em>Resets <see cref="SecuritySetPartitionListSettings.AllowedList"/></em></p>
+    ///   <p>Comma-separated list of allowed partition IDs</p>
+    /// </summary>
+    [Pure]
+    public static T ResetAllowedList<T>(this T toolSettings) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.AllowedList = null;
+        return toolSettings;
+    }
+    #endregion
+    #region Keychain
+    /// <summary>
+    ///   <p><em>Sets <see cref="SecuritySetPartitionListSettings.Keychain"/></em></p>
+    /// </summary>
+    [Pure]
+    public static T SetKeychain<T>(this T toolSettings, string keychain) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Keychain = keychain;
+        return toolSettings;
+    }
+    /// <summary>
+    ///   <p><em>Resets <see cref="SecuritySetPartitionListSettings.Keychain"/></em></p>
+    /// </summary>
+    [Pure]
+    public static T ResetKeychain<T>(this T toolSettings) where T : SecuritySetPartitionListSettings
+    {
+        toolSettings = toolSettings.NewInstance();
+        toolSettings.Keychain = null;
         return toolSettings;
     }
     #endregion
