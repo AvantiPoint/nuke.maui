@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using AvantiPoint.Nuke.Maui;
-using AvantiPoint.Nuke.Maui.Tools;
+using AvantiPoint.Nuke.Maui.Tools.NuGetKeyVaultSignTool;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
 using Nuke.Common.Utilities.Collections;
 using Nuke.Components;
-using static AvantiPoint.Nuke.Maui.Tools.NuGetKeyVaultSignToolTasks;
+using static AvantiPoint.Nuke.Maui.Tools.NuGetKeyVaultSignTool.NuGetKeyVaultSignToolTasks;
 
 public interface ICodeSignNuget : IHazArtifacts, IHazAzureKeyVaultCertificate
 {

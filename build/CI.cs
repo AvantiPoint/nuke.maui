@@ -3,7 +3,11 @@ using AvantiPoint.Nuke.Maui.CI;
 
 public class CI : CIBuild
 {
-    public override PushTrigger OnPush => "master";
+    public override PushTrigger OnPush => new ()
+    {
+        Branches = new [] { "master" },
+        ExcludePaths = new[] { ".gitignore", ".editorconfig", "docs/**", "**/*.md", ".github" }
+    };
 
     public override IEnumerable<ICIStage> Stages => new[]
     {

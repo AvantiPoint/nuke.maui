@@ -18,6 +18,12 @@ trigger:
   branches:
     include:
     - master
+  paths:
+      - .gitignore
+      - .editorconfig
+      - docs/**
+      - **/*.md
+      - .github
 stages:
 - stage: build
   displayName: 'Build'
