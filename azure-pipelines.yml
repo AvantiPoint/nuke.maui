@@ -23,7 +23,7 @@ trigger:
       - .editorconfig
       - docs/**
       - **/*.md
-      - .github
+      - .github/*
 stages:
 - stage: build
   displayName: 'Build'

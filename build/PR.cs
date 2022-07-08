@@ -6,7 +6,7 @@ public class PR : CIBuild
     public override PullRequestTrigger OnPull => new()
     {
         Branches = new[] { "master" },
-        ExcludePaths = new[] { ".gitignore", ".editorconfig", "docs/**", "**/*.md", ".github/**" }
+        ExcludePaths = new[] { ".gitignore", ".editorconfig", "docs/**", "**/*.md", ".github/*" }
     };
 
     public override IEnumerable<ICIStage> Stages => new[]
