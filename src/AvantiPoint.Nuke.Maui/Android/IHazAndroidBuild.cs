@@ -62,14 +62,16 @@ public interface IHazAndroidBuild :
                         .SetProcessArgumentConfigurator(_ => _.Add($"/bl:{outputDirectory / "android.binlog"}"))));
 
             Assert.NotEmpty(outputDirectory.GlobFiles("*-Signed.apk", "*-Signed.aab"), "No Signed APK or AAB files could be found");
-            //outputDirectory.GlobFiles("*")
-            //    .Where(x => !x.Name.Contains("-Signed"))
-            //    .ForEach(x =>
-            //    {
-            //        if (!x.NameWithoutExtension.EndsWith("-Signed"))
-            //            File.Delete(x);
-            //        else
-            //            Log.Information("Android Artifact: {Name}", x.Name);
-            //    });
+            outputDirectory.GlobFiles("*")
+                .Where(x => !x.Name.Contains("-Signed"))
+                .ForEach(x =>
+                {
+                    if (Path.GetExtension(x) == ".binlog")
+                        return;
+                    else if (!x.NameWithoutExtension.EndsWith("-Signed"))
+                        File.Delete(x);
+                    else
+                        Log.Information("Android Artifact: {Name}", x.Name);
+                });
         });
 }
