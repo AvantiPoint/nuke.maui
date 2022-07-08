@@ -20,11 +20,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - '!.gitignore'
-      - '!.editorconfig'
-      - '!docs/**'
-      - '!**/*.md'
 
 jobs:
   android-build:
