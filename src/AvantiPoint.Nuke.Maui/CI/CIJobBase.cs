@@ -16,7 +16,7 @@ public abstract class CIJobBase : ICIJob
 
     public virtual SecretImportCollection ImportSecrets => new();
 
-    public virtual IEnumerable<string> CacheIncludePatterns => new[] { "~/.nuget/packages" };
+    public virtual IEnumerable<string> CacheIncludePatterns => new[] { ".nuke/temp", "~/.nuget/packages" };
     public virtual IEnumerable<string> CacheExcludePatterns => Array.Empty<string>();
     public virtual IEnumerable<string> CacheKeyFiles => new[] { "**/global.json", "**/*.csproj" };
 

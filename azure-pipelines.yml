@@ -35,6 +35,12 @@ stages:
       fetchDepth: 0
       clean: true
     - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
+    - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
         key: $(Agent.OS) | nuget-packages | **/global.json, **/*.csproj
@@ -57,6 +63,12 @@ stages:
     - checkout: self
       fetchDepth: 0
       clean: true
+    - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
     - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
@@ -84,6 +96,12 @@ stages:
       fetchDepth: 0
       clean: true
     - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
+    - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
         key: $(Agent.OS) | nuget-packages | **/global.json, **/*.csproj
@@ -110,6 +128,12 @@ stages:
       fetchDepth: 0
       clean: true
     - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
+    - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
         key: $(Agent.OS) | nuget-packages | **/global.json, **/*.csproj
@@ -128,6 +152,12 @@ stages:
     - checkout: self
       fetchDepth: 0
       clean: true
+    - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
     - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
@@ -154,6 +184,12 @@ stages:
       inputs:
         artifact: nuget
         path: 'artifacts/nuget'
+    - task: Cache@2
+      displayName: Cache (nuke-temp)
+      inputs:
+        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
+        restoreKeys: $(Agent.OS) | nuke-temp
+        path: .nuke/temp
     - task: Cache@2
       displayName: Cache (nuget-packages)
       inputs:
