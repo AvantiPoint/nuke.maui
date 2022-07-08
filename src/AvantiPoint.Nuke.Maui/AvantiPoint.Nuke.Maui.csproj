@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <NukeBaseNamespace>$(MSBuildProjectName).Tools</NukeBaseNamespace>
+    <NukeUseNestedNamespaces>true</NukeUseNestedNamespaces>
+    <NukeBaseDirectory>$(MSBuildProjectDirectory)\Tools</NukeBaseDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +17,8 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.20.0" />
   </ItemGroup>
 
-  <!-- <ItemGroup>
-    <NukeSpecificationFiles Include="**\Security.json" />
-  </ItemGroup> -->
+  <ItemGroup>
+    <NukeSpecificationFiles Include="Tools\**\*.json" />
+  </ItemGroup>
 
 </Project>

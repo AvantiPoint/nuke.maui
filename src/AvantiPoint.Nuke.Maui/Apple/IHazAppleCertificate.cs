@@ -1,11 +1,12 @@
 ﻿using AvantiPoint.Nuke.Maui.Extensions;
+using AvantiPoint.Nuke.Maui.Tools.Security;
 using JetBrains.Annotations;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Components;
 using Serilog;
-using static AvantiPoint.Nuke.Maui.Apple.SecurityTasks;
+using static AvantiPoint.Nuke.Maui.Tools.Security.SecurityTasks;
 
 namespace AvantiPoint.Nuke.Maui.Apple;
 
