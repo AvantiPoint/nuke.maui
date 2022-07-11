@@ -8,6 +8,7 @@ using Nuke.Common.Execution;
 using Nuke.Common.IO;
 using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
+using GitHubActionsVcsTrigger = AvantiPoint.Nuke.Maui.CI.Configuration.GitHubActionsVcsTrigger;
 
 namespace AvantiPoint.Nuke.Maui.CI.GitHubActions;
 
@@ -26,12 +27,13 @@ public class GitHubWorkflowAttribute : CIBuildAttribute
 
     protected override ConfigurationEntity BuildConfiguration(NukeBuild build, IEnumerable<ExecutableTarget> relevantTargets)
     {
-        var configuration = new GitHubActionsConfiguration
+        var configuration = new GitHubActionsWorkflowConfiguration
         {
             Name = _name,
             ShortTriggers = Array.Empty<GitHubActionsTrigger>(),
             DetailedTriggers = GetTriggers().ToArray(),
-            Jobs = GetJobs(relevantTargets).ToArray()
+            Jobs = GetJobs(relevantTargets).ToArray(),
+            Variables = Build.Variables.OfType<CIVariable>()
         };
 
         return configuration;

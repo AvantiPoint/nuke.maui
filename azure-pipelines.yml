@@ -18,6 +18,17 @@ trigger:
   branches:
     include:
     - master
+
+variables:
+- name: DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION
+  value: true
+- name: DOTNET_SKIP_FIRST_TIME_EXPERIENCE
+  value: true
+- name: DOTNET_NOLOGO
+  value: true
+- name: DOTNET_CLI_TELEMETRY_OPTOUT
+  value: true
+
 stages:
 - stage: build
   displayName: 'Build'

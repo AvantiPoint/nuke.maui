@@ -14,17 +14,23 @@
 # </auto-generated>
 # ------------------------------------------------------------------------------
 
-name: pr
+name: PR
 
 on:
   pull_request:
     branches:
       - master
-    paths:
-      - '!.gitignore'
-      - '!.editorconfig'
-      - '!docs/**'
-      - '!**/*.md'
+    paths-ignore:
+      - .gitignore
+      - .editorconfig
+      - 'docs/**'
+      - '**/*.md'
+
+env:
+  DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
   android-build:

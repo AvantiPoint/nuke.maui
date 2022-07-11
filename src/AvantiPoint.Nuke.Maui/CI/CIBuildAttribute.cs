@@ -23,10 +23,10 @@ public abstract class CIBuildAttribute : ConfigurationAttributeBase
         else
             throw new InvalidCastException();
 
-        _name = type.Name.SplitCamelHumpsWithKnownWords().JoinUnderscore().ToLowerInvariant();
+        _name = type.Name;
     }
 
-    public override string IdPostfix => _name;
+    public override string IdPostfix => _name.SplitCamelHumpsWithKnownWords().JoinUnderscore().ToLowerInvariant();
 
     public override IEnumerable<string> RelevantTargetNames => Array.Empty<string>();
     public override IEnumerable<string> IrrelevantTargetNames => Array.Empty<string>();

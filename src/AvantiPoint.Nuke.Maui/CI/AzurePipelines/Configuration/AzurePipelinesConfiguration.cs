@@ -14,9 +14,21 @@ internal class AzurePipelinesConfiguration : ConfigurationEntity
 
     public override void Write(CustomFileWriter writer)
     {
-        if(Variables.Any())
+        Trigger.Write(writer);
+
+        writer.WriteLine();
+
+        writer.WriteLine("variables:");
+        writer.WriteLine($"- name: {DotNetEnvironment.SystemConsoleAllowAnsiColorRedirection}");
+        writer.WriteLine("  value: true");
+        writer.WriteLine($"- name: {DotNetEnvironment.SkipFirstTimeExperience}");
+        writer.WriteLine("  value: true");
+        writer.WriteLine($"- name: {DotNetEnvironment.NoLogo}");
+        writer.WriteLine("  value: true");
+        writer.WriteLine($"- name: {DotNetEnvironment.CliTelemetryOutput}");
+        writer.WriteLine("  value: true");
+        if (Variables.Any())
         {
-            writer.WriteLine("variables:");
             Variables.OfType<CIVariable>()
                 .ForEach(x =>
                 {
@@ -27,7 +39,7 @@ internal class AzurePipelinesConfiguration : ConfigurationEntity
                 .ForEach(x => writer.WriteLine($"- group: {x.Name}"));
         }
 
-        Trigger.Write(writer);
+        writer.WriteLine();
 
         writer.WriteLine("stages:");
         Stages.ForEach(x => x.Write(writer));
