@@ -5,12 +5,12 @@ The AvantiPoint Nuke Maui library is an extension library for [Nuke Build](https
 | Platform | Status |
 | -------- | ------ |
 | Android | Supported |
-| iOS | In Progress\* |
+| iOS | Supported |
 | macOS | Supported |
-| Windows | Supported |
-| Tizen | Planned |
+| Windows | Supported\* |
+| Tizen | PR Welcome |
 
-\* The iOS Build is technically feature complete and is passing in local builds, however we are still trying to determine why it is hanging and ultimately times out in CI builds.
+\* You can optionally produce an unsigned MSIX for Windows or sign with a PFX that has been Base64 Encoded or use Azure Key Vault.
 
 ## Application Versioning
 
