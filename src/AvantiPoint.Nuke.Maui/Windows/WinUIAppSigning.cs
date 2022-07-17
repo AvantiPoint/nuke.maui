@@ -1,4 +1,5 @@
-﻿using Nuke.Common;
+﻿using AvantiPoint.Nuke.Maui.Tools.DotNet;
+using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.AzureSignTool;
@@ -51,6 +52,8 @@ internal static class WinUIAppSigning
 
         Assert.True(codeSign.AzureKeyVault.StartsWith("https://"), "The Uri must start with the https protocol");
         Assert.True(Uri.TryCreate(codeSign.AzureKeyVault, UriKind.Absolute, out var uri), "The supplied Azure Key Vault is not a valid Uri.");
+
+        DotNetToolHelper.EnsureInstalled("AzureSignTool");
 
         AzureSignTool(_ => _
                 .SetKeyVaultUrl(codeSign.AzureKeyVault)

@@ -23,4 +23,8 @@
     <NukeSpecificationFiles Include="Tools\**\*.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="build\*.props" Pack="true" PackagePath="buildTransient" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using AvantiPoint.Nuke.Maui;
+using AvantiPoint.Nuke.Maui.Tools.DotNet;
 using AvantiPoint.Nuke.Maui.Tools.NuGetKeyVaultSignTool;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
@@ -26,6 +27,9 @@ public interface ICodeSignNuget : IHazArtifacts, IHazAzureKeyVaultCertificate
 
             var files = ArtifactsDirectory.GlobFiles("**/*.nupkg", "**/*.snupkg");
             Assert.True(files.Any(), "No NuGet Packages could be found in the artifacts directory to sign");
+
+            DotNetToolHelper.EnsureInstalled("NuGetKeyVaultSignTool");
+
             files.ForEach(x => NuGetKeyVaultSignTool(_ => _
                 .SetPackageFilter(x)
                 .SetClientId(AzureKeyVaultClientId)
