@@ -14,6 +14,11 @@
     <ProjectReference Include="..\src\AvantiPoint.Nuke.Maui\AvantiPoint.Nuke.Maui.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageDownload Include="AzureSignTool" Version="[3.0.0]" />
+    <PackageDownload Include="NuGetKeyVaultSignTool" Version="[3.2.2]" />
+  </ItemGroup>
+
   <Import Project="../src/AvantiPoint.Nuke.Maui/build/AvantiPoint.Nuke.Maui.props" />
 
 </Project>
