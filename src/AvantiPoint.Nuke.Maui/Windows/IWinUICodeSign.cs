@@ -1,5 +1,7 @@
-﻿using Nuke.Common;
+﻿using System.Text.Json;
+using Nuke.Common;
 using Nuke.Common.IO;
+using Nuke.Common.Utilities.Collections;
 using Nuke.Components;
 using Serilog;
 
@@ -27,6 +29,18 @@ public interface IWinUICodeSign : IHazArtifacts, IHazAzureKeyVaultCertificate
         .Unlisted()
         .Executes(() =>
         {
+            var assetsJsonPath = RootDirectory / "build" / "obj" / "project.assets.json";
+            Assert.FileExists(assetsJsonPath, "Could not find the project.assets.json");
+            var json = File.ReadAllText(assetsJsonPath);
+            Assert.NotNullOrWhiteSpace(json, "The contents of the project.assets.json are null or empty");
+            var assets = JsonSerializer.Deserialize<ProjectAssets>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+
+            Assert.True(assets.Project.Frameworks.ContainsKey("net6.0"), "Expected to find a net6.0 target in the build project.assets.json");
+
+            var framework = assets.Project.Frameworks["net6.0"];
+            framework.DownloadDependencies
+                .ForEach(x => Log.Information($"Download Dependency: {x.Name} - {x.Version}"));
+
             var artifacts = ArtifactsDirectory / "windows-build" / "AppPackages";
 
             var msixFiles = artifacts.GlobFiles("*/*.msix");

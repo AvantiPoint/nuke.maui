@@ -55,13 +55,6 @@ internal static class WinUIAppSigning
         Assert.True(codeSign.AzureKeyVault.StartsWith("https://"), "The Uri must start with the https protocol");
         Assert.True(Uri.TryCreate(codeSign.AzureKeyVault, UriKind.Absolute, out var uri), "The supplied Azure Key Vault is not a valid Uri.");
 
-        var json = File.ReadAllText(codeSign.RootDirectory / "build" / "obj" / "project.assets.json");
-        var assets = JsonSerializer.Deserialize<ProjectAssets>(json);
-        Assert.True(assets.Project.Frameworks.ContainsKey("net6.0"), "Expected to find a net6.0 target in the build project.assets.json");
-
-        var framework = assets.Project.Frameworks["net6.0"];
-        framework.DownloadDependencies
-            .ForEach(x => Log.Information($"Download Dependency: {x.Name} - {x.Version}"));
         //DotNetToolHelper.EnsureInstalled("AzureSignTool");
 
         AzureSignTool(_ => _
@@ -79,9 +72,8 @@ internal static class WinUIAppSigning
 
         return true;
     }
-
-    record ProjectAssets(Project Project);
-    record Project(Dictionary<string, Framework> Frameworks);
-    record Framework(DownloadDependency[] DownloadDependencies);
-    record DownloadDependency(string Name, string Version);
 }
+record ProjectAssets(Project Project);
+record Project(Dictionary<string, Framework> Frameworks);
+record Framework(DownloadDependency[] DownloadDependencies);
+record DownloadDependency(string Name, string Version);
