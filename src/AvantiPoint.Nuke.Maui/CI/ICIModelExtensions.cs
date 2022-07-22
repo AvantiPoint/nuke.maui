@@ -10,7 +10,7 @@ internal static class ICIModelExtensions
 {
     internal static string JobName(this ICIJob job)
     {
-        var split = job.Name.Contains(' ') ? job.Name.Split(' ') : job.Name.SplitCamelHumpsWithKnownWords();
+        var split = job.Name.Contains(' ') || job.Name.Contains('.') ? job.Name.Split(' ', '.') : job.Name.SplitCamelHumpsWithKnownWords();
         return split.JoinDash().ToLowerInvariant();
     }
 

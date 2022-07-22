@@ -28,7 +28,7 @@ public interface ICodeSignNuget : IHazArtifacts, IHazAzureKeyVaultCertificate
             var files = ArtifactsDirectory.GlobFiles("**/*.nupkg", "**/*.snupkg");
             Assert.True(files.Any(), "No NuGet Packages could be found in the artifacts directory to sign");
 
-            DotNetToolHelper.EnsureInstalled("NuGetKeyVaultSignTool");
+            //DotNetToolHelper.EnsureInstalled("NuGetKeyVaultSignTool");
 
             files.ForEach(x => NuGetKeyVaultSignTool(_ => _
                 .SetPackageFilter(x)
