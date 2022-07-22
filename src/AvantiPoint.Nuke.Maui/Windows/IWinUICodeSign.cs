@@ -31,6 +31,7 @@ public interface IWinUICodeSign : IHazArtifacts, IHazAzureKeyVaultCertificate
         {
             var assetsJsonPath = RootDirectory / "build" / "obj" / "project.assets.json";
             Assert.FileExists(assetsJsonPath, "Could not find the project.assets.json");
+            Log.Information($"Project Assets: {assetsJsonPath}");
             var json = File.ReadAllText(assetsJsonPath);
             Assert.NotNullOrWhiteSpace(json, "The contents of the project.assets.json are null or empty");
             var assets = JsonSerializer.Deserialize<ProjectAssets>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
