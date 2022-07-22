@@ -36,5 +36,6 @@ internal static class BuildProps
     public static class MacCatalyst
     {
         public const string CreatePackage = nameof(CreatePackage);
+        public const string EnablePackageSigning = nameof(EnablePackageSigning);
     }
 }

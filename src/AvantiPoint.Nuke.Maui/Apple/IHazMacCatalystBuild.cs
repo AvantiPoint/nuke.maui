@@ -42,6 +42,7 @@ public interface IHazMacCatalystBuild :
                     .SetProject(Project)
                     .SetFramework(targetFramework)
                     .AddProperty(BuildProps.MacCatalyst.CreatePackage, true)
+                    .AddProperty(BuildProps.MacCatalyst.EnablePackageSigning, true)
                     .When(!string.IsNullOrEmpty(ApplicationDisplayVersion), _ => _
                         .AddProperty(BuildProps.Maui.ApplicationDisplayVersion, ApplicationDisplayVersion))
                     .When(ApplicationVersion > 0, _ => _
