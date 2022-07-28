@@ -25,7 +25,7 @@ public interface IHazIOSBuild :
     IHazMauiAppVersion,
     IHazTimeout
 {
-    [Parameter]
+    [Parameter("Sets the Linker for iOS builds. Valid options None, SdkOnly, Full")]
     MtouchLink Linker => TryGetValue(() => Linker);
 
     Target CompileIos => _ => _

@@ -6,7 +6,7 @@ namespace AvantiPoint.Nuke.Maui;
 
 public interface IEncodeFile : INukeBuild
 {
-    [Parameter]
+    [Parameter("File path of file to encode to Base64")]
     string InputFilePath => TryGetValue(() => InputFilePath);
 
     Target EncodeFile => _ => _
