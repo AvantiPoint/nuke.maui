@@ -57,7 +57,9 @@ internal static class WinUIAppSigning
 
         //DotNetToolHelper.EnsureInstalled("AzureSignTool");
 
-        AzureSignTool(_ => _
+        try
+        {
+            AzureSignTool(_ => _
                 .SetKeyVaultUrl(codeSign.AzureKeyVault)
                 .SetKeyVaultClientId(codeSign.AzureKeyVaultClientId)
                 .SetKeyVaultClientSecret(codeSign.AzureKeyVaultClientSecret)
@@ -69,8 +71,30 @@ internal static class WinUIAppSigning
                 .When(codeSign.Verbosity == Verbosity.Verbose, _ => _
                     .EnableVerbose())
                 .AddFiles(files));
+        }
+        catch (Exception ex)
+        {
+            LogException(ex);
+            Assert.Fail("Unable to sign the MSIX with Azure Key Vault.", ex);
+        }
 
         return true;
+    }
+
+    private static void LogException(Exception ex)
+    {
+        Log.Error("----------------------------------------------------------");
+        Log.Error(ex.ToString());
+        Log.Error("----------------------------------------------------------");
+
+        if(ex is AggregateException ae)
+        {
+            ae.InnerExceptions.ForEach(x => LogException(x));
+        }
+        else if(ex.InnerException is not null)
+        {
+            LogException(ex.InnerException);
+        }
     }
 }
 record ProjectAssets(Project Project);
