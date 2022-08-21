@@ -36,7 +36,8 @@ public interface IWinUICodeSign : IHazArtifacts, IHazAzureKeyVaultCertificate
             Assert.NotNullOrWhiteSpace(json, "The contents of the project.assets.json are null or empty");
             var assets = JsonSerializer.Deserialize<ProjectAssets>(json, new JsonSerializerOptions(JsonSerializerDefaults.Web));
 
-            Assert.True(assets.Project.Frameworks.ContainsKey("net6.0"), "Expected to find a net6.0 target in the build project.assets.json");
+            Assert.NotNull(assets, "Unable to deserialize Project Assets.");
+            Assert.True(assets!.Project.Frameworks.ContainsKey("net6.0"), "Expected to find a net6.0 target in the build project.assets.json");
 
             var framework = assets.Project.Frameworks["net6.0"];
             framework.DownloadDependencies
