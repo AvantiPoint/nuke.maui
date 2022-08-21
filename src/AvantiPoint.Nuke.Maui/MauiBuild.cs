@@ -22,14 +22,14 @@ public abstract class MauiBuild : NukeBuild,
 
     public TimeSpan CompileTimeout { get; protected set; } = TimeSpan.FromMinutes(15);
 
-    protected sealed override void WriteLogo()
-    {
-        Debug();
-        GetAsciiArt().ForEach(x => Debug(x));
-        Debug();
-    }
+    //protected sealed override void WriteLogo()
+    //{
+    //    Debug();
+    //    GetAsciiArt().ForEach(x => Debug(x));
+    //    Debug();
+    //}
 
-    protected virtual string[] GetAsciiArt() =>
+    private string[] GetAsciiArt() =>
         new[]
         {
             "██████╗░░█████╗░░██╗░░░░░░░██╗███████╗██████╗░███████╗██████╗░  ██████╗░██╗░░░██╗",
