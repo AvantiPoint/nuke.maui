@@ -121,10 +121,12 @@
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "InputFilePath": {
-          "type": "string"
+          "type": "string",
+          "description": "File path of file to encode to Base64"
         },
         "Linker": {
           "type": "string",
+          "description": "Sets the Linker for iOS builds. Valid options None, SdkOnly, Full",
           "enum": [
             "Full",
             "None",

@@ -94,57 +94,6 @@ stages:
       inputs:
         artifactName: ios-build
         targetPath: 'artifacts/ios-build'
-  - job: maccatalyst-build
-    displayName: 'MacCatalyst Build'
-    steps:
-    - checkout: self
-      fetchDepth: 0
-      clean: true
-    - task: Cache@2
-      displayName: Cache (nuke-temp)
-      inputs:
-        key: $(Agent.OS) | nuke-temp | **/global.json, **/*.csproj
-        restoreKeys: $(Agent.OS) | nuke-temp
-        path: .nuke/temp
-    - task: Cache@2
-      displayName: Cache (nuget-packages)
-      inputs:
-        key: $(Agent.OS) | nuget-packages | **/global.json, **/*.csproj
-        restoreKeys: $(Agent.OS) | nuget-packages
-        path: $(HOME)/.nuget/packages
-    - script: |
-        ./build.sh CompileMacCatalyst
-      displayName: 'Run ./build.sh CompileMacCatalyst'
-      env:
-        P12B64: $(P12B64)
-        P12Password: $(P12PASSWORD)
-        AppleIssuerId: $(APPLE_ISSUER_ID)
-        AppleKeyId: $(APPLE_KEY_ID)
-        AppleAuthKeyP8: $(APPLE_AUTH_KEY_P8)
-        AppleProfileId: $(MACCATALYST_PROVISIONING_PROFILE)
-    - task: PublishPipelineArtifact@1
-      inputs:
-        artifactName: maccatalyst-build
-        targetPath: 'artifacts/maccatalyst-build'
-  - job: windows-build
-    displayName: 'Windows Build'
-    steps:
-    - checkout: self
-      fetchDepth: 0
-      clean: true
-    - script: |
-        ./build.cmd CompileWindows
-      displayName: 'Run ./build.cmd CompileWindows'
-      env:
-        AzureKeyVault: $(CODESIGNKEYVAULT)
-        AzureKeyVaultCertificate: $(CODESIGNCERTIFICATE)
-        AzureKeyVaultClientId: $(CODESIGNCLIENTID)
-        AzureKeyVaultClientSecret: $(CODESIGNCLIENTSECRET)
-        AzureKeyVaultTenantId: $(CODESIGNTENANTID)
-    - task: PublishPipelineArtifact@1
-      inputs:
-        artifactName: windows-build
-        targetPath: 'artifacts/windows-build'
   - job: compile-library
     displayName: 'Compile Library'
     steps:
