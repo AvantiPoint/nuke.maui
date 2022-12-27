@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageDownload Include="AzureSignTool" Version="[3.0.0]" />
-    <PackageDownload Include="NuGetKeyVaultSignTool" Version="[3.2.2]" />
+    <PackageDownload Include="AzureSignTool" Version="[4.0.1]" />
+    <PackageDownload Include="NuGetKeyVaultSignTool" Version="[3.2.3]" />
   </ItemGroup>
 
   <Import Project="../src/AvantiPoint.Nuke.Maui/build/AvantiPoint.Nuke.Maui.props" />
