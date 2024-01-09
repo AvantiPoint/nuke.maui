@@ -16,7 +16,7 @@
     <PackageReference Include="Nuke.Common" Version="6.3.0" />
     <PackageReference Include="Nuke.Components" Version="6.3.0" />
     <PackageReference Include="Refit" Version="6.3.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.34.0" />
   </ItemGroup>
 
   <ItemGroup>
